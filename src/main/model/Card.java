@@ -17,4 +17,8 @@ public class Card {
     public String getValue() {
         return value;
     }
+
+    public String getCard() {
+        return value + " of " + suit;
+    }
 }
