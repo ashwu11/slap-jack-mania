@@ -1,16 +1,24 @@
 package model;
 
+    /**
+     * Represents an account with a username, status quote, number of wins, number of games played,
+     * current win streak, and highest win streak.
+     **/
+
 public class Account {
     private String username;
     private String status;
     private int wins;
     private int gamesPlayed;
     private int winStreak;
+    private int highestWinStreak;
 
     public Account(String username, String status) {
         this.username = username;
         this.status = status;
     }
+
+
 
     // getters & setters
     public String getUsername() {
@@ -39,6 +47,10 @@ public class Account {
 
     public int getWinStreak() {
         return winStreak;
+    }
+
+    public int getHighestWinStreak() {
+        return highestWinStreak;
     }
 
 }

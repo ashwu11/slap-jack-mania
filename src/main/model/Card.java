@@ -1,20 +1,33 @@
 package model;
 
-public class Card {
-    private String suit;
-    private String value;
+    /**
+     * Represents a card with a suit and value
+     **/
 
-    public Card(String value, String suit) {
-        // stub
+public class Card {
+    private Suit suit;
+    private Value value;
+
+    enum Suit {
+        Diamonds, Clubs, Hearts, Spades
+    }
+
+    enum Value {
+        Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King
+    }
+
+    public Card(Value value, Suit suit) {
+        this.value = value;
+        this.suit = suit;
     }
 
 
     // getters
-    public String getSuit() {
+    public Suit getSuit() {
         return suit;
     }
 
-    public String getValue() {
+    public Value getValue() {
         return value;
     }
 
