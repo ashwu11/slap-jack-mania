@@ -26,7 +26,7 @@ perfect opportunity to do so. I believe this will be a fun project to work on.
 - Last player to slap must collect all cards from current round.
 - Players who slap incorrectly must collect all cards from current round.
 - There is no penalty if all players do not slap the pile.
-- In a clockwise order, players count up (from one to king) every time a card is 
+- In a clockwise order, players count up (from Ace to King) every time a card is 
 flipped. The count starts over when a round ends.
 
 

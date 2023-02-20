@@ -12,10 +12,12 @@ import model.Card;
 
 public class CardDeck {
     private Card[] cards;
+    private int numCards;
 
     //EFFECTS: creates an array of 52 cards
     public CardDeck() {
         cards = new Card[52];
+        makeDeck();
     }
 
     // MODIFIES: this
@@ -31,6 +33,7 @@ public class CardDeck {
             cards[count++] = new Card(value, Card.Suit.Hearts);
             cards[count++] = new Card(value, Card.Suit.Spades);
         }
+        numCards = 52;
     }
 
     //MODIFIES: this
@@ -39,7 +42,7 @@ public class CardDeck {
         Random random = new Random();
 
         for (int i = 0; i < cards.length; i++) {
-            int randomNumber = i + random.nextInt(cards.length - 1);
+            int randomNumber = random.nextInt(cards.length - 1);
             Card randomCard = cards[randomNumber]; // get a card at a random index value
             cards[randomNumber] = cards[i];       // swap the index of the card we got with the card we're at
             cards[i] = randomCard;               // set the actual card to the random card we got earlier
@@ -47,11 +50,14 @@ public class CardDeck {
     }
 
     //REQUIRES: 0 < c < 52
+    //EFFECTS: deals the number of cards from the deck
     public Card[] dealCards(int c) {  // c is number of cards a player gets, depends on the number of players playing
         Card[] stack = new Card[c];
 
         for (int i = 0; i < c; i++) {
-            stack[i] = cards[i]; // TODO Q: does this deal from the bottom of the deck...?
+            numCards--;
+            stack[i] = cards[numCards];
+            // TODO Q: does this deal from the top of the deck?
         }
 
         return stack;

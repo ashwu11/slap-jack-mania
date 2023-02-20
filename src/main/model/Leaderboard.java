@@ -18,10 +18,9 @@ public class Leaderboard {
         return null; // show account info for given username
     }
 
-    //TODO method that can view all accounts w stats
+    public void printAllAccounts(){ //TODO method that can view all accounts w stats
         // System.out.println("username | wins | games played | win streak | highest win streak")
         // for (Account a : leaderboard)
         // System.out.println(a.getUsername() + "  " a.getWins() + "  " etc.....)
-
-
+    }
 }
