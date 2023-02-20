@@ -16,6 +16,10 @@ public class Account {
     public Account(String username, String status) {
         this.username = username;
         this.status = status;
+        wins = 0;
+        gamesPlayed = 0;
+        winStreak = 0;
+        highestWinStreak = 0;
     }
 
 

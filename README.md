@@ -57,4 +57,4 @@ games played, and win streak.
 - As a user, I want to be able to slap a card.
 - As a user, I want to be able to remove (i.e. flip) and add cards to a player's 
 deck.
-- As a user, I want to be able to add a timer to a game.
+- As a user, I want to be able to end a game.
