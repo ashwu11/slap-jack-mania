@@ -1,40 +1,63 @@
 package model;
 
-    /**
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+/**
      * Represents a player in a game with a name, cards in hand, and slap and flip buttons
      **/
 
 public class Player {
     private String name;
-    private CardDeck hand;
-    private int numCardsLeft;
+    private ArrayList<Card> hand;
     private String slap;
     private String flip;
+    private int numCardsLeft;
 
-    public Player(String name, CardDeck cards, String slap, String flip) {
-        // takes user input for the slap and flip button!
+    public Player(String name, ArrayList<Card> hand, String slap, String flip) {
+        this.name = name;
+        this.hand = hand;
+        this.slap = slap;
+        this.flip = flip;
     }
 
+    // MODIFIES: this
     // REQUIRES: player hand is not empty
-    // TODO method that returns the top card from player's hand
-    public void flipCard() {  // change void to Card
-        // occurs if button pressed = flip
-        // returns the top card from the player's hand, and removes it from the player's hand
-
-        // numCardsLeft -= 1
-        // return hand.get(numCardsLeft); this fails to compile :((
-        // hand.remove(numCardsLeft)
+    // EFFECTS: returns the top card from player's hand (and removes it from hand)
+    public Card flipCard() {  // change void to Card
+        numCardsLeft -= 1;
+        return hand.get(numCardsLeft);
     }
 
-    //TODO method that adds cards in pile to a player's deck
-    public void getCards(CardDeck cards) {  // TODO Q: not sure if this is how I should set the parameter
-        // parameter takes in a list of cards (that'll be the cards in pile)
-        // adds these cards to the players deck
+    // MODIFIES: this
+    // EFFECTS: adds multiple cards to the player's hand
+    public void addCardsToHand(ArrayList<Card> cards) {
+        hand.addAll(cards);
     }
 
 
     //EFFECTS: checks if the player had no cards left
     public Boolean checkEmpty() {
         return numCardsLeft == 0;
+    }
+
+    public void setNumCardsLeft(int n) {
+        numCardsLeft = n;
+    }
+
+    public int getNumCardsLeft() {
+        return numCardsLeft;
+    }
+
+    public String getSlapKey() {
+        return this.slap;
+    }
+
+    public String getFlipKey() {
+        return this.flip;
+    }
+
+    public ArrayList<Card> getHand() {
+        return this.hand;
     }
 }

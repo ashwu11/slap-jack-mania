@@ -7,22 +7,34 @@ package model;
 
 public class Account {
     private String username;
-    private String status;
     private int wins;
     private int gamesPlayed;
-    private int winStreak;
-    private int highestWinStreak;
+    //private int winStreak;
+    //private int highestWinStreak;
 
-    public Account(String username, String status) {
+    public Account(String username) {
         this.username = username;
-        this.status = status;
         wins = 0;
         gamesPlayed = 0;
-        winStreak = 0;
-        highestWinStreak = 0;
+        //winStreak = 0;
+        //highestWinStreak = 0;
     }
 
+    public void updateAccount(Boolean win) {
+        gamesPlayed += 1;
+        if (win) {
+            wins += 1;
+        }
+    }
 
+    // EFFECTS: determines if given string matches account username
+    public Boolean matchAccount(String name) {
+        if (name.equals(this.username)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     // getters & setters
     public String getUsername() {
@@ -33,14 +45,6 @@ public class Account {
         this.username = username;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public int getWins() {
         return wins;
     }
@@ -49,12 +53,12 @@ public class Account {
         return gamesPlayed;
     }
 
-    public int getWinStreak() {
-        return winStreak;
-    }
-
-    public int getHighestWinStreak() {
-        return highestWinStreak;
-    }
+//    public int getWinStreak() {
+//        return winStreak;
+//    }
+//
+//    public int getHighestWinStreak() {
+//        return highestWinStreak;
+//    }
 
 }

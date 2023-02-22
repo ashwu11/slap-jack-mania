@@ -56,10 +56,8 @@ public class CardDeck {
 
         for (int i = 0; i < c; i++) {
             numCards--;
-            stack[i] = cards[numCards];
-            // TODO Q: does this deal from the top of the deck?
+            stack[i] = cards[numCards]; // deal from the top of the deck
         }
-
         return stack;
     }
 }
