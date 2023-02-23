@@ -80,7 +80,7 @@ public class Game {
         }
 
         System.out.println("\nThe winner is " + winner + "! Good game.");
-        System.out.println("\nEnter " + SAVE_COMMAND + " to save the game.");
+        System.out.println("\nEnter '" + SAVE_COMMAND + "' to save the game.");
 
         while (end) {
             instructionsAfterGame();
@@ -341,9 +341,9 @@ public class Game {
 
     //EFFECTS: prints the instructions after a game
     private void instructionsAfterGame() {
-        System.out.println("Enter " + VIEW_COMMAND + " to see the Leaderboard.");
-        System.out.println("Enter " + PLAY_COMMAND + " to play again.");
-        System.out.println("Enter " + QUIT_COMMAND + " to quit anytime.");
+        System.out.println("Enter '" + VIEW_COMMAND + "' to see the Leaderboard.");
+        System.out.println("Enter '" + PLAY_COMMAND + "' to play again.");
+        System.out.println("Enter '" + QUIT_COMMAND + "' to quit anytime.");
     }
 
     //REQUIRES: input length > 0
@@ -354,7 +354,7 @@ public class Game {
             handleSave();
         } else if (word.equals(VIEW_COMMAND)) {
             Leaderboard.printAllAccounts();
-            System.out.println("\nEnter " + REMOVE_COMMAND + " to remove an account");
+            System.out.println("\nEnter '" + REMOVE_COMMAND + "' to remove an account");
         }  else if (word.equals(REMOVE_COMMAND)) {
             handleRemove();
             Leaderboard.printAllAccounts();
@@ -397,7 +397,8 @@ public class Game {
     }
 
     private Boolean checkJackRule(Card first) {
-        return first.getValue() == Card.Value.Jack || first.getValue() == cardCount; //TODO cardcount rule isn't working
+        return first.getValue() == Card.Value.Jack || first.getValue() == cardCount;
+        // TODO Q: Don't know why card count rule isn't working :(
     }
 
     private Boolean checkTwoRules(Card first, Card second) {

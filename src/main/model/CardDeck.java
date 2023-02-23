@@ -5,16 +5,16 @@ import java.util.Random;
 
 import model.Card;
 
-    /**
-     * Represents a deck of 52 cards. There are four suits: diamonds, clubs, hearts, spades.
-     * There are four of each card: Ace, 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King
-     **/
+/**
+ * Represents a deck of 52 cards. There are four suits: diamonds, clubs, hearts, spades.
+ * There are four of each card: Ace, 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King
+ **/
 
 public class CardDeck {
     private Card[] cards;
     private int numCards;
 
-    //EFFECTS: creates an array of 52 cards
+    //EFFECTS: creates a deck of 52 cards
     public CardDeck() {
         cards = new Card[52];
         makeDeck();
@@ -59,5 +59,13 @@ public class CardDeck {
             stack[i] = cards[numCards]; // deal from the top of the deck
         }
         return stack;
+    }
+
+    public int getNumCards() {
+        return this.numCards;
+    }
+
+    public Card[] getCards() {
+        return this.cards;
     }
 }

@@ -19,6 +19,7 @@ public class Player {
         this.hand = hand;
         this.slap = slap;
         this.flip = flip;
+        numCardsLeft = this.hand.size();
     }
 
     // MODIFIES: this

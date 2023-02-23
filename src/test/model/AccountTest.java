@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class AccountTest {
     private Account test1;
     private Account test2;
-    // TODO Q: Do we need a test class for every single model? Also do we need tests for getters?
+    //TODO Q: Do we need a test class for every single model? Also do we need tests for getters?
 
     @BeforeEach
     public void runBefore() {

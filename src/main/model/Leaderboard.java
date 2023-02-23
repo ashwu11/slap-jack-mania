@@ -9,6 +9,10 @@ import java.util.ArrayList;
 public class Leaderboard {
     private static final ArrayList<Account> leaderboard = new ArrayList<>();
 
+    //TODO Q: it doesn't allow me to make a constructor, so how can I make tests for this class?
+    public Leaderboard() {
+        //leaderboard = new ArrayList<>();
+    }
 
     //MODIFIES: this
     //REQUIRES: the username does not already exist in leaderboard
@@ -49,7 +53,7 @@ public class Leaderboard {
         return acc;
     }
 
-    //TODO Q: this method doesn't work when I try to remove the bottom acc -> iteration link TA sent
+    //TODO Q: this method doesn't work sometimes -> TA said we will learn about iterators later
     //REQUIRES: leaderboard.size() > 1
     //EFFECTS: removes account from leaderboard
     public static void removeAccount(String name) {
