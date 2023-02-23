@@ -9,15 +9,11 @@ public class Account {
     private String username;
     private int wins;
     private int gamesPlayed;
-    //private int winStreak;
-    //private int highestWinStreak;
 
     public Account(String username) {
         this.username = username;
         wins = 0;
         gamesPlayed = 0;
-        //winStreak = 0;
-        //highestWinStreak = 0;
     }
 
     public void updateAccount(Boolean win) {
