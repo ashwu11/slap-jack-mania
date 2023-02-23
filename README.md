@@ -4,13 +4,11 @@
 
 
 This application represents a game of Slap Jack, a multiplayer reaction game of 
-up to four players. Players can either continue as a guest or create an account.
-If an account is created, you can view each saved account's 
-total wins, games played, as well as a streak count of consecutive wins.
-The flips and slaps will be represented by certain keys, depending on how many 
-players are in the game. The rules below apply to all players, and a 
-clarification of the terms can be found below as well.
-There will also be a timer option for the desired duration of a game.
+up to four players. Players can choose whether to save a game, which will add
+their account to the leaderboard. Players can also view each saved account's 
+total wins and games played. The 'flips' and 'slaps' will be represented by certain keys, 
+depending on how many players are in the game. The rules below apply to all players, 
+and a clarification of the terms can be found below as well.
 
 This project is of interest to me because Slap Jack is one of my favorite card 
 games. In fact, my friends and I have developed new rules a long time ago for 
@@ -26,7 +24,7 @@ perfect opportunity to do so. I believe this will be a fun project to work on.
 - Last player to slap must collect all cards from current round.
 - Players who slap incorrectly must collect all cards from current round.
 - There is no penalty if all players do not slap the pile.
-- In a clockwise order, players count up (from Ace to King) every time a card is 
+- In ascending order, players count up (from Ace to King) every time a card is 
 flipped. The count starts over when a round ends.
 
 
@@ -50,11 +48,9 @@ flipped. The count starts over when a round ends.
  
 
 ## User Stories
-- As a user, I want to be able to create a new account and add it to a list of 
-accounts
-- As a user, I want to be able to view the list of accounts with their wins,
-games played, and win streak.
+- As a user, I want to be able to add an account to a list of 
+accounts by saving a game.
+- As a user, I want to be able to view the list of accounts saved.
 - As a user, I want to be able to slap a card.
-- As a user, I want to be able to remove (i.e. flip) and add cards to a player's 
-deck.
-- As a user, I want to be able to end a game.
+- As a user, I want to be able to remove (i.e. flip) a card.
+- As a user, I want to be able to quit the game.

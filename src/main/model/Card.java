@@ -1,8 +1,8 @@
 package model;
 
-    /**
-     * Represents a card with a suit and value
-     **/
+/**
+ * Represents a card with a suit and value
+ **/
 
 public class Card {
     private Suit suit;
@@ -21,17 +21,15 @@ public class Card {
         this.suit = suit;
     }
 
+    public String getCard() {
+        return value + " of " + suit;
+    }
 
-    // getters
     public Suit getSuit() {
         return suit;
     }
 
     public Value getValue() {
         return value;
-    }
-
-    public String getCard() {
-        return value + " of " + suit;
     }
 }

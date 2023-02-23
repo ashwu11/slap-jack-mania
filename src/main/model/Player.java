@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
-     * Represents a player in a game with a name, cards in hand, and slap and flip buttons
-     **/
+ * Represents a player in a game with a name, cards in hand, and slap and flip buttons
+ **/
 
 public class Player {
     private String name;

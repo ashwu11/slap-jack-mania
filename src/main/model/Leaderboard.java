@@ -2,16 +2,12 @@ package model;
 
 import java.util.ArrayList;
 
-    /**
-     * Represents a leaderboard displaying each account and its corresponding stats
-    **/
+/**
+ * Represents a leaderboard displaying each account and its corresponding stats
+ **/
 
 public class Leaderboard {
     private static final ArrayList<Account> leaderboard = new ArrayList<>();
-
-    public Leaderboard() { //TODO Q: how to make leaderboard permanent? When I rerun everything saved disappears
-        //leaderboard = new ArrayList<Account>();
-    }
 
 
     //MODIFIES: this
@@ -41,7 +37,6 @@ public class Leaderboard {
         return exists;
     }
 
-
     // REQUIRES: account name is the name of an existing account
     // EFFECTS: returns account object that has name
     public static Account lookupAccount(String name) {
@@ -54,7 +49,7 @@ public class Leaderboard {
         return acc;
     }
 
-    //TODO Q: this method doesn't work when I try to remove the bottom acc
+    //TODO Q: this method doesn't work when I try to remove the bottom acc -> iteration link TA sent
     //REQUIRES: leaderboard.size() > 1
     //EFFECTS: removes account from leaderboard
     public static void removeAccount(String name) {

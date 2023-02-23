@@ -1,16 +1,23 @@
 package ui;
 
+import exceptions.InvalidInputException;
+import exceptions.InvalidSlapException;
+import exceptions.QuitGame;
 import model.*;
 
 import java.util.*;
 
+/**
+ * Represents a game of SlapJack
+ **/
+
 public class Game {
-    private Card.Value cardCount; // keeping track of the count of cards
+    private Card.Value cardCount;
     private int cardCountInt;
-    private int currentTurn; // keeps track of whose turn it is
+    private int currentTurn;
     private final ArrayList<String> playerNames;
     private final ArrayList<Player> players;
-    private final ArrayList<ArrayList<Card>> playerDecks; // each player has a diff list of cards
+    private final ArrayList<ArrayList<Card>> playerDecks;
     private final ArrayList<Card> cardsPlayed;
     private final ArrayList<String> instructions = new ArrayList<>();
     private final CardDeck cardDeck;
@@ -19,12 +26,14 @@ public class Game {
     private Boolean run;
     private Boolean end;
     private String winner;
-    private ArrayList<String> validKeys;
     private static final String PLAY_COMMAND = "play";
     private static final String QUIT_COMMAND = "quit";
     private static final String SAVE_COMMAND = "save";
     private static final String VIEW_COMMAND = "view";
     private static final String REMOVE_COMMAND = "remove";
+    private String key;
+    private int numberOfPlayers;
+    private ArrayList<String> validInputs;
 
 
     public Game() {
@@ -32,50 +41,70 @@ public class Game {
         cardsPlayed = new ArrayList<>();
         playerNames = new ArrayList<>();
         players = new ArrayList<>();
+        validInputs = new ArrayList<>();
         currentTurn = 0;
         cardCount = Card.Value.Ace;
         cardCountInt = 0;
-        playerDecks = new ArrayList<ArrayList<Card>>();
+        playerDecks = new ArrayList<>();
         input = new Scanner(System.in);
         start = true;
         run = true;
         end = true;
+        numberOfPlayers = 0;
 
-        runGame();
+        try {
+            runGame();
+        } catch (QuitGame e) {
+            System.out.println("Quitting game...");
+        }
     }
 
-    public void runGame() {
-        String key;
+    public void runGame() throws QuitGame {
         cardDeck.shuffleDeck();
+        System.out.println("\nWelcome to SlapJack Mania! \nTo start, please enter up to four player names.");
         handleInputStart();
         initializeAndDeal();
 
         while (run) {
-            System.out.println("Current Turn: " + playerNames.get(currentTurn) + "\n");
+            System.out.println("\nIt's " + playerNames.get(currentTurn) + "'s turn");
             printCardsPlayed();
-            key = input.nextLine();
-            key = key.toLowerCase();
+            acceptInput();
 
-            handleInputGame(key);
-            updateCardCount();
-            updateCurrentTurn();
+            try {
+                handleInputGame(key);
+                updateCardCount();
+                updateCurrentTurn();
+            } catch (InvalidInputException e) {
+                System.err.println("That was an invalid input :(");
+            }
         }
 
-        System.out.println("The winner is " + winner + "! Good game.");
+        System.out.println("\nThe winner is " + winner + "! Good game.");
         System.out.println("\nEnter " + SAVE_COMMAND + " to save the game.");
 
         while (end) {
             instructionsAfterGame();
-            key = input.nextLine();
-            key = key.toLowerCase();
+            acceptInput();
             handleInputAfter(key);
         }
+
+
     }
 
+    private void acceptInput() {
+        key = input.nextLine();
+        key = key.toLowerCase();
+    }
+
+
     //EFFECTS: handles user input before the game until user quits
-    public void handleInputStart() {
+    public void handleInputStart() throws QuitGame {
         while (start) {
-            printInstructions();
+            try {
+                printInstructions();
+            } catch (InvalidInputException e) {
+                System.err.println("That was an invalid input :(");
+            }
         }
         printKeys();
         System.out.println("\nGet ready to play!");
@@ -98,37 +127,54 @@ public class Game {
         }
     }
 
-
-    //REQUIRES: last letter of word is a valid key
     //EFFECTS: handles user input during the game
-    private void handleInputGame(String word) {
+    private void handleInputGame(String word) throws InvalidInputException {
         Player currentPlayer = players.get(currentTurn);
+
+        if (word.isEmpty()) {
+            throw new InvalidInputException();
+        }
+
         String firstLetter = word.substring(0,1);
         String lastLetter = word.substring(word.length() - 1);
 
         if (gameOver(word)) {
             run = false;
         } else if (!validInput(lastLetter)) {
-            System.out.println("\nNot your turn!");
-            currentTurn--;
-            cardCountInt--;
+            wrongTurn();
         } else if (lastLetter.equals(currentPlayer.getFlipKey())) {
-            Card currentCard = currentPlayer.flipCard();
-            cardsPlayed.add(currentCard);
-            System.out.println("\n" + currentPlayer.getName() + " flipped a card!\n");
-            System.out.println("Card count is at " + cardCount);
+            cardFlip(currentPlayer);
         } else {
-            cardCount = Card.Value.Ace;
-            cardCountInt = -1;
-            handleSlapInput(firstLetter, lastLetter);
+            try {
+                cardSlap(firstLetter, lastLetter);
+            } catch (InvalidSlapException e) {
+                System.out.println("Cannot slap if no cards have been played :|");
+            }
         }
+    }
 
+    private void wrongTurn() {
+        System.out.println("\nNot your turn >:(");
+        currentTurn--;
+        cardCountInt--;
+    }
+
+    private void cardFlip(Player currentPlayer) {
+        Card currentCard = currentPlayer.flipCard();
+        cardsPlayed.add(currentCard);
+        System.out.println("\n -> " + currentPlayer.getName() + " flipped a card, " + cardCount + "!");
+    }
+
+    private void cardSlap(String first, String last) throws InvalidSlapException {
+        handleSlapInput(first, last);
+        cardCount = Card.Value.Ace;
+        cardCountInt = -1;
     }
 
     //EFFECTS: handles the slap input
-    private void handleSlapInput(String first, String last) {
+    private void handleSlapInput(String first, String last) throws InvalidSlapException {
         int size = cardsPlayed.size();
-        Boolean validSlap = false;
+        boolean validSlap = false;
         if (size >= 3) {
             Card firstCard = cardsPlayed.get(size - 1);
             Card secondCard = cardsPlayed.get(size - 2);
@@ -142,7 +188,7 @@ public class Game {
             Card firstCard = cardsPlayed.get(size - 1);
             validSlap = checkJackRule(firstCard);
         } else {
-            System.out.println("Cannot slap if no cards have been played yet!");
+            throw new InvalidSlapException();
         }
 
         if (validSlap) {
@@ -154,15 +200,21 @@ public class Game {
     }
 
     private void correctSlap(String first, String last) {
+        Random random = new Random();
+        int randomNumber = random.nextInt(3);
         for (Player p : players) {
             if (last.equals(p.getSlapKey())) {
                 currentTurn = players.indexOf(p) - 1;
                 p.addCardsToHand(cardsPlayed);
                 cardsPlayed.removeAll(cardsPlayed);
-                System.out.println("\n oh no, " + p.getName() + " was the last to slap...\n");
+                System.out.println("\n Oh no, " + p.getName() + " was the last to slap... \nTaking all the cards...");
             }
             if (first.equals(p.getSlapKey())) {
-                System.out.println("\n Yay, " + p.getName() + " was the first to slap!\n");
+                System.out.println("\n Yay, " + p.getName() + " was the first to slap!");
+                if (randomNumber == 1) {
+                    System.out.println(" So speedy!");
+                }
+
             }
         }
     }
@@ -181,7 +233,7 @@ public class Game {
     // REQUIRES: key must be a single letter
     // checks if the input is a playable command
     public Boolean validInput(String key) {
-        validKeys = new ArrayList<>();
+        ArrayList<String> validKeys = new ArrayList<>();
         Player currentPlayer = players.get(currentTurn);
         validKeys.add(currentPlayer.getFlipKey());
         validKeys.add("t");
@@ -195,6 +247,8 @@ public class Game {
 
     //EFFECTS: shows the cards that have been played so far
     public void printCardsPlayed() {
+        System.out.println("Cards played:\n");
+
         for (Card c : cardsPlayed) {
             System.out.println(c.getCard());
         }
@@ -217,27 +271,29 @@ public class Game {
 
 
     //EFFECTS: prints instructions to start the game
-    private void printInstructions() {
-        System.out.println("\nPlease enter a player name.");
-        System.out.println("When you are ready to play, enter '" + PLAY_COMMAND + "'.");
+    private void printInstructions() throws QuitGame, InvalidInputException {
+        System.out.println("\nWhen you are ready to play, enter '" + PLAY_COMMAND + "'");
+        System.out.println("To quit the app, enter '" + QUIT_COMMAND + "'\n");
         String str;
-
         str = input.nextLine();
-        int num = 0;
 
-        if (str.equals(PLAY_COMMAND) || num == 4) { // TODO Why doesn't this work?
+        if (str.equals(PLAY_COMMAND) || numberOfPlayers == 4) {
             start = false;
+        } else if (str.equals(QUIT_COMMAND)) {
+            throw new QuitGame();
+        }  else if (str.isEmpty()) {
+            throw new InvalidInputException();
         } else {
+            numberOfPlayers++;
             playerNames.add(str);
             printPlayers();
             printInstructions();
-            num++;
         }
     }
 
     //EFFECTS: prints out players entered to play
     private void printPlayers() {
-        System.out.println("\nCurrent players:\n");
+        System.out.println("\nCurrent players:");
         for (String p : playerNames) {
             System.out.println(p);
         }
@@ -249,7 +305,7 @@ public class Game {
         instructions.add(" : 'q' to slap, 'a' to flip");
         instructions.add(" : 'l' to slap, 'p' to flip");
 
-        System.out.println("\nInstructions: \n");
+        System.out.println("\nInstructions:");
         int c = 0;
         for (String p : playerNames) {
             System.out.println(p + instructions.get(c));
@@ -260,7 +316,7 @@ public class Game {
 
     //EFFECTS: check whether the game is over
     public boolean gameOver(String input) {
-        Boolean check = false;
+        boolean check = false;
         int least = 52;
 
         for (Player p : players) {
@@ -328,7 +384,7 @@ public class Game {
 
     //EFFECTS: removes an account from the leaderboards
     private void handleRemove() {
-        System.out.println("Enter the account username you wish to remove: ");
+        System.out.println("\nEnter the account username you wish to remove: ");
         String in;
         in = input.nextLine();
         Leaderboard.removeAccount(in);
@@ -337,16 +393,11 @@ public class Game {
 
     //EFFECTS: updates the stats of each account
     private void updateAccounts(Player p) {
-        if (p.getName().equals(winner)) {
-            Leaderboard.updateAccount(p.getName(), true);
-        } else {
-            Leaderboard.updateAccount(p.getName(), false);
-        }
+        Leaderboard.updateAccount(p.getName(), p.getName().equals(winner));
     }
 
-
     private Boolean checkJackRule(Card first) {
-        return first.getValue() == Card.Value.Jack;
+        return first.getValue() == Card.Value.Jack || first.getValue() == cardCount; //TODO cardcount rule isn't working
     }
 
     private Boolean checkTwoRules(Card first, Card second) {
@@ -356,5 +407,4 @@ public class Game {
     private Boolean checkAllRules(Card first, Card second, Card third) {
         return checkTwoRules(first, second) || first.getValue() == third.getValue();
     }
-
 }
