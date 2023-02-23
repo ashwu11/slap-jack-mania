@@ -1,9 +1,7 @@
 package model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
 /**
      * Represents a player in a game with a name, cards in hand, and slap and flip buttons
@@ -35,7 +33,8 @@ public class Player {
     // EFFECTS: adds multiple cards to the player's hand
     public void addCardsToHand(ArrayList<Card> cards) {
         hand.addAll(cards);
-        Collections.reverse(hand); // TODO double check if we need this
+        numCardsLeft += cards.size();
+        Collections.reverse(hand);
     }
 
 

@@ -1,9 +1,6 @@
 package ui;
 
-import model.Card;
-import model.CardDeck;
-import model.Leaderboard;
-import model.Player;
+import model.*;
 
 import java.util.*;
 
@@ -11,13 +8,13 @@ public class Game {
     private Card.Value cardCount; // keeping track of the count of cards
     private int cardCountInt;
     private int currentTurn; // keeps track of whose turn it is
-    private ArrayList<String> playerNames;
-    private ArrayList<Player> players;
-    private ArrayList<ArrayList<Card>> playerDecks; // each player has a diff list of cards
-    private ArrayList<Card> cardsPlayed;
-    private ArrayList<String> instructions = new ArrayList<>();
-    private CardDeck cardDeck;
-    private Scanner input;
+    private final ArrayList<String> playerNames;
+    private final ArrayList<Player> players;
+    private final ArrayList<ArrayList<Card>> playerDecks; // each player has a diff list of cards
+    private final ArrayList<Card> cardsPlayed;
+    private final ArrayList<String> instructions = new ArrayList<>();
+    private final CardDeck cardDeck;
+    private final Scanner input;
     private Boolean start;
     private Boolean run;
     private Boolean end;
@@ -75,57 +72,32 @@ public class Game {
         }
     }
 
-        //  TODO Q: would it be better to store the rules in another class? or keep it in a method?
+    //EFFECTS: handles user input before the game until user quits
+    public void handleInputStart() {
+        while (start) {
+            printInstructions();
+        }
+        printKeys();
+        System.out.println("\nGet ready to play!");
+    }
 
+    private void initializeAndDeal() {
+        int cardsPerPerson = 52 / playerNames.size();
 
-    public void handleInputAfter(String word) {
+        for (int p = 0; p < playerNames.size(); p++) {
+            ArrayList<Card> playerHand = new ArrayList<>();
+            Card[] hand = cardDeck.dealCards(cardsPerPerson);
+            Collections.addAll(playerHand, hand);
+            playerDecks.add(playerHand);
 
-        if (word.equals(SAVE_COMMAND)) {
-            for (Player p : players) {
-                Boolean exists = Leaderboard.checkExisting(p.getName());
-                if (exists) {
-                    updateAccounts(p);
-                } else {
-                    Leaderboard.registerAccount(p.getName());
-                    updateAccounts(p);
-                }
-            }
-
-        } else if (word.equals(VIEW_COMMAND)) {
-            Leaderboard.printAllAccounts();
-            System.out.println("Enter " + REMOVE_COMMAND + " to remove an account");
-        }  else if (word.equals(REMOVE_COMMAND)) {
-            handleRemove();
-        } else if (word.equals(PLAY_COMMAND)) {
-            new Game();
-        } else if (word.equals(QUIT_COMMAND)) {
-            System.out.println("\nThanks for playing :)");
-            end = false;
-        } else {
-            System.out.println("Invalid command!");
+            String slapKey = instructions.get(p).substring(4,5);
+            String flipKey = instructions.get(p).substring(17,18);
+            Player player = new Player(playerNames.get(p), playerDecks.get(p), slapKey, flipKey);
+            player.setNumCardsLeft(cardsPerPerson);
+            players.add(player);
         }
     }
 
-    private void handleRemove() {
-        System.out.println("Enter the account username you wish to remove: ");
-        String in;
-        in = input.nextLine();
-        Leaderboard.removeAccount(in);
-    }
-
-    private void updateAccounts(Player p) {
-        if (p.getName().equals(winner)) {
-            Leaderboard.updateAccount(p.getName(), true);
-        } else {
-            Leaderboard.updateAccount(p.getName(), false);
-        }
-    }
-
-    private void instructionsAfterGame() {
-        System.out.println("Enter " + VIEW_COMMAND + " to see the Leaderboard.");
-        System.out.println("Enter " + PLAY_COMMAND + " to play again.");
-        System.out.println("Enter " + QUIT_COMMAND + " to quit anytime.");
-    }
 
     //REQUIRES: last letter of word is a valid key
     //EFFECTS: handles user input during the game
@@ -155,7 +127,33 @@ public class Game {
 
     //EFFECTS: handles the slap input
     private void handleSlapInput(String first, String last) {
+        int size = cardsPlayed.size();
+        Boolean validSlap = false;
+        if (size >= 3) {
+            Card firstCard = cardsPlayed.get(size - 1);
+            Card secondCard = cardsPlayed.get(size - 2);
+            Card thirdCard = cardsPlayed.get(size - 3);
+            validSlap = checkAllRules(firstCard, secondCard, thirdCard);
+        } else if (size >= 2) {
+            Card firstCard = cardsPlayed.get(size - 1);
+            Card secondCard = cardsPlayed.get(size - 2);
+            validSlap = checkTwoRules(firstCard, secondCard);
+        } else if (size >= 1) {
+            Card firstCard = cardsPlayed.get(size - 1);
+            validSlap = checkJackRule(firstCard);
+        } else {
+            System.out.println("Cannot slap if no cards have been played yet!");
+        }
 
+        if (validSlap) {
+            correctSlap(first, last);
+        } else {
+            incorrectSlap(first);
+        }
+
+    }
+
+    private void correctSlap(String first, String last) {
         for (Player p : players) {
             if (last.equals(p.getSlapKey())) {
                 currentTurn = players.indexOf(p) - 1;
@@ -165,6 +163,17 @@ public class Game {
             }
             if (first.equals(p.getSlapKey())) {
                 System.out.println("\n Yay, " + p.getName() + " was the first to slap!\n");
+            }
+        }
+    }
+
+    private void incorrectSlap(String first) {
+        for (Player p : players) {
+            if (first.equals(p.getSlapKey())) {
+                System.out.println("\n Oh no, " + p.getName() + " wasn't supposed to slap!\n");
+                p.addCardsToHand(cardsPlayed);
+                cardsPlayed.removeAll(cardsPlayed);
+                currentTurn = players.indexOf(p) - 1;
             }
         }
     }
@@ -207,16 +216,6 @@ public class Game {
     }
 
 
-
-    //EFFECTS: handles user input before the game until user quits
-    public void handleInputStart() {
-        while (start) {
-            printInstructions();
-        }
-        printKeys();
-        System.out.println("\nGet ready to play!");
-    }
-
     //EFFECTS: prints instructions to start the game
     private void printInstructions() {
         System.out.println("\nPlease enter a player name.");
@@ -258,27 +257,6 @@ public class Game {
         }
     }
 
-    private void initializeAndDeal() {
-        int cardsPerPerson = 52 / playerNames.size();
-
-        for (int p = 0; p < playerNames.size(); p++) {
-            ArrayList<Card> playerHand = new ArrayList<>();
-            Card[] hand = cardDeck.dealCards(cardsPerPerson);
-            Collections.addAll(playerHand, hand);
-            playerDecks.add(playerHand);
-
-            String slapKey = instructions.get(p).substring(4,5);
-            String flipKey = instructions.get(p).substring(17,18);
-            Player player = new Player(playerNames.get(p), playerDecks.get(p), slapKey, flipKey);
-            player.setNumCardsLeft(cardsPerPerson);
-            players.add(player);
-        }
-    }
-
-    //EFFECTS: get the name of the current player
-    public String getCurrentName() {
-        return playerNames.get(currentTurn);
-    }
 
     //EFFECTS: check whether the game is over
     public boolean gameOver(String input) {
@@ -296,6 +274,7 @@ public class Game {
             for (Player p : players) {
                 if (p.getNumCardsLeft() < least) {
                     winner = p.getName();
+                    least = p.getNumCardsLeft();
                 }
             }
             check = true;
@@ -304,28 +283,78 @@ public class Game {
         return check;
     }
 
-
-    // method for testing only!
-
-    public ArrayList<String> getPlayerNames() {
-        return playerNames;
+    //EFFECTS: prints the instructions after a game
+    private void instructionsAfterGame() {
+        System.out.println("Enter " + VIEW_COMMAND + " to see the Leaderboard.");
+        System.out.println("Enter " + PLAY_COMMAND + " to play again.");
+        System.out.println("Enter " + QUIT_COMMAND + " to quit anytime.");
     }
 
-    public int getCurrentPlayerCardsLeft() {
-        return players.get(currentTurn).getNumCardsLeft();
+    //REQUIRES: input length > 0
+    //EFFECTS handles the user input after a game
+    public void handleInputAfter(String word) {
+
+        if (word.equals(SAVE_COMMAND)) {
+            handleSave();
+        } else if (word.equals(VIEW_COMMAND)) {
+            Leaderboard.printAllAccounts();
+            System.out.println("\nEnter " + REMOVE_COMMAND + " to remove an account");
+        }  else if (word.equals(REMOVE_COMMAND)) {
+            handleRemove();
+            Leaderboard.printAllAccounts();
+        } else if (word.equals(PLAY_COMMAND)) {
+            new Game();
+        } else if (word.equals(QUIT_COMMAND)) {
+            System.out.println("\nThanks for playing :)");
+            end = false;
+        } else {
+            System.out.println("Invalid command!");
+        }
     }
 
-
-    public void seeHand() {
+    //EFFECTS: saves the current game
+    private void handleSave() {
+        System.out.println("\ngame saved!\n");
         for (Player p : players) {
-            ArrayList<Card> cards = p.getHand();
-            System.out.println("\nnext hand\n");
-
-            for (Card c : cards) {
-                System.out.println(c.getCard());
+            Account a = Leaderboard.lookupAccount(p.getName());
+            if (a != null) {
+                updateAccounts(p);
+            } else {
+                Leaderboard.registerAccount(p.getName());
+                updateAccounts(p);
             }
         }
+    }
 
+    //EFFECTS: removes an account from the leaderboards
+    private void handleRemove() {
+        System.out.println("Enter the account username you wish to remove: ");
+        String in;
+        in = input.nextLine();
+        Leaderboard.removeAccount(in);
+        System.out.println("\nAccount '" + in + "' has been removed.\n");
+    }
+
+    //EFFECTS: updates the stats of each account
+    private void updateAccounts(Player p) {
+        if (p.getName().equals(winner)) {
+            Leaderboard.updateAccount(p.getName(), true);
+        } else {
+            Leaderboard.updateAccount(p.getName(), false);
+        }
+    }
+
+
+    private Boolean checkJackRule(Card first) {
+        return first.getValue() == Card.Value.Jack;
+    }
+
+    private Boolean checkTwoRules(Card first, Card second) {
+        return first.getValue() == second.getValue() || checkJackRule(first);
+    }
+
+    private Boolean checkAllRules(Card first, Card second, Card third) {
+        return checkTwoRules(first, second) || first.getValue() == third.getValue();
     }
 
 }

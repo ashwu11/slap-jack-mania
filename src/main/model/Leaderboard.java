@@ -7,10 +7,10 @@ import java.util.ArrayList;
     **/
 
 public class Leaderboard {
-    private static ArrayList<Account> leaderboard;
+    private static final ArrayList<Account> leaderboard = new ArrayList<>();
 
-    public Leaderboard() {
-        leaderboard = new ArrayList<Account>();
+    public Leaderboard() { //TODO Q: how to make leaderboard permanent? When I rerun everything saved disappears
+        //leaderboard = new ArrayList<Account>();
     }
 
 
@@ -38,10 +38,24 @@ public class Leaderboard {
                 exists = true;
             }
         }
-
         return exists;
     }
 
+
+    // REQUIRES: account name is the name of an existing account
+    // EFFECTS: returns account object that has name
+    public static Account lookupAccount(String name) {
+        Account acc = null;
+        for (Account a : leaderboard) {
+            if (a.getUsername().equalsIgnoreCase(name)) {
+                acc = a;
+            }
+        }
+        return acc;
+    }
+
+    //TODO Q: this method doesn't work when I try to remove the bottom acc
+    //REQUIRES: leaderboard.size() > 1
     //EFFECTS: removes account from leaderboard
     public static void removeAccount(String name) {
         int count = 0;
@@ -53,11 +67,12 @@ public class Leaderboard {
         }
     }
 
-    //TODO method that can view all accounts w stats based on top wins
+    //EFFECTS: prints out all accounts in leaderboard
     public static void printAllAccounts() {
-        System.out.println("username | wins | games played");
-        // for (Account a : leaderboard)
-        // System.out.println(a.getUsername() + "  " a.getWins() + "  " etc.....)
-        // maybe find a way to line everything up? Like add spaces after the username after checking length idk
+        System.out.println("\nusername | wins | games played\n");
+        for (Account a : leaderboard) {
+            System.out.println(a.getUsername() + " | " + a.getWins() + " | " + a.getGamesPlayed());
+        }
+        System.out.println("\n");
     }
 }
