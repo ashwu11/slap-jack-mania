@@ -22,6 +22,7 @@ public class Game {
     private final ArrayList<String> instructions = new ArrayList<>();
     private final CardDeck cardDeck;
     private final Scanner input;
+    private final Leaderboard leaderboard;
     private Boolean start;
     private Boolean run;
     private Boolean end;
@@ -30,18 +31,17 @@ public class Game {
     private static final String QUIT_COMMAND = "quit";
     private static final String SAVE_COMMAND = "save";
     private static final String VIEW_COMMAND = "view";
-    private static final String REMOVE_COMMAND = "remove";
+    //private static final String REMOVE_COMMAND = "remove";
     private String key;
     private int numberOfPlayers;
-    private ArrayList<String> validInputs;
 
 
     public Game() {
         cardDeck = new CardDeck();
+        cardDeck.makeDeck();
         cardsPlayed = new ArrayList<>();
         playerNames = new ArrayList<>();
         players = new ArrayList<>();
-        validInputs = new ArrayList<>();
         currentTurn = 0;
         cardCount = Card.Value.Ace;
         cardCountInt = 0;
@@ -51,6 +51,7 @@ public class Game {
         run = true;
         end = true;
         numberOfPlayers = 0;
+        leaderboard = new Leaderboard();
 
         try {
             runGame();
@@ -174,7 +175,7 @@ public class Game {
     //EFFECTS: handles the slap input
     private void handleSlapInput(String first, String last) throws InvalidSlapException {
         int size = cardsPlayed.size();
-        boolean validSlap = false;
+        boolean validSlap;
         if (size >= 3) {
             Card firstCard = cardsPlayed.get(size - 1);
             Card secondCard = cardsPlayed.get(size - 2);
@@ -250,7 +251,7 @@ public class Game {
         System.out.println("Cards played:\n");
 
         for (Card c : cardsPlayed) {
-            System.out.println(c.getCard());
+            System.out.println(c.getCardName());
         }
     }
 
@@ -353,11 +354,11 @@ public class Game {
         if (word.equals(SAVE_COMMAND)) {
             handleSave();
         } else if (word.equals(VIEW_COMMAND)) {
-            Leaderboard.printAllAccounts();
-            System.out.println("\nEnter '" + REMOVE_COMMAND + "' to remove an account");
-        }  else if (word.equals(REMOVE_COMMAND)) {
-            handleRemove();
-            Leaderboard.printAllAccounts();
+            leaderboard.printAllAccounts();
+            //System.out.println("\nEnter '" + REMOVE_COMMAND + "' to remove an account"); //fix problem later
+//        }  else if (word.equals(REMOVE_COMMAND)) {
+//            handleRemove();
+//            leaderboard.printAllAccounts();
         } else if (word.equals(PLAY_COMMAND)) {
             new Game();
         } else if (word.equals(QUIT_COMMAND)) {
@@ -372,28 +373,28 @@ public class Game {
     private void handleSave() {
         System.out.println("\ngame saved!\n");
         for (Player p : players) {
-            Account a = Leaderboard.lookupAccount(p.getName());
+            Account a = leaderboard.lookupAccount(p.getName());
             if (a != null) {
                 updateAccounts(p);
             } else {
-                Leaderboard.registerAccount(p.getName());
+                leaderboard.registerAccount(p.getName());
                 updateAccounts(p);
             }
         }
     }
 
-    //EFFECTS: removes an account from the leaderboards
-    private void handleRemove() {
-        System.out.println("\nEnter the account username you wish to remove: ");
-        String in;
-        in = input.nextLine();
-        Leaderboard.removeAccount(in);
-        System.out.println("\nAccount '" + in + "' has been removed.\n");
-    }
+//    //EFFECTS: removes an account from the leaderboards
+//    private void handleRemove() {
+//        System.out.println("\nEnter the account username you wish to remove: ");
+//        String in;
+//        in = input.nextLine();
+//        leaderboard.removeAccount(in);
+//        System.out.println("\nAccount '" + in + "' has been removed.\n");
+//    }
 
     //EFFECTS: updates the stats of each account
     private void updateAccounts(Player p) {
-        Leaderboard.updateAccount(p.getName(), p.getName().equals(winner));
+        leaderboard.updateAccount(p.getName(), p.getName().equals(winner));
     }
 
     private Boolean checkJackRule(Card first) {

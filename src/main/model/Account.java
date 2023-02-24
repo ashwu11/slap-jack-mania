@@ -10,7 +10,7 @@ public class Account {
     private int wins;
     private int gamesPlayed;
 
-    //EFFECTS: creates a new account with 0 wins and 0 games played
+    //EFFECTS: creates a new account with specified username and 0 wins and 0 games played
     public Account(String username) {
         this.username = username;
         wins = 0;

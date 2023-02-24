@@ -6,8 +6,8 @@ import java.util.Random;
 import model.Card;
 
 /**
- * Represents a deck of 52 cards. There are four suits: diamonds, clubs, hearts, spades.
- * There are four of each card: Ace, 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King
+ * Represents a deck of 52 cards. There are four suits: Diamonds, Clubs, Hearts, Spades.
+ * Each suit has the following values: Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King
  **/
 
 public class CardDeck {
@@ -17,23 +17,21 @@ public class CardDeck {
     //EFFECTS: creates a deck of 52 cards
     public CardDeck() {
         cards = new Card[52];
-        makeDeck();
+        numCards = 0;
     }
 
     // MODIFIES: this
     // EFFECTS: adds appropriate cards to form a full deck
     public void makeDeck() {
         Card.Value[] values = Card.Value.values();
-        int count = 0;
 
         for (int i = 0; i < 13; i++) {
             Card.Value value = values[i];
-            cards[count++] = new Card(value, Card.Suit.Diamonds);
-            cards[count++] = new Card(value, Card.Suit.Clubs);
-            cards[count++] = new Card(value, Card.Suit.Hearts);
-            cards[count++] = new Card(value, Card.Suit.Spades);
+            cards[numCards++] = new Card(value, Card.Suit.Diamonds);
+            cards[numCards++] = new Card(value, Card.Suit.Clubs);
+            cards[numCards++] = new Card(value, Card.Suit.Hearts);
+            cards[numCards++] = new Card(value, Card.Suit.Spades);
         }
-        numCards = 52;
     }
 
     //MODIFIES: this

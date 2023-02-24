@@ -16,12 +16,14 @@ public class Card {
         Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King;
     }
 
+    //EFFECTS: makes a card with specified value and suit
     public Card(Value value, Suit suit) {
         this.value = value;
         this.suit = suit;
     }
 
-    public String getCard() {
+    //EFFECTS: returns a description of the card in the format "value of suit"
+    public String getCardName() {
         return value + " of " + suit;
     }
 

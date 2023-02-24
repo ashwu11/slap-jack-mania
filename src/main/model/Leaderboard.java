@@ -7,22 +7,25 @@ import java.util.ArrayList;
  **/
 
 public class Leaderboard {
-    private static final ArrayList<Account> leaderboard = new ArrayList<>();
+    private final ArrayList<Account> leaderboard;
 
-    //TODO Q: it doesn't allow me to make a constructor, so how can I make tests for this class?
+    //EFFECTS: makes a new list of accounts
     public Leaderboard() {
-        //leaderboard = new ArrayList<>();
+        leaderboard = new ArrayList<>();
     }
 
     //MODIFIES: this
     //REQUIRES: the username does not already exist in leaderboard
     //EFFECTS: creates and adds an account to the leaderboard
-    public static void registerAccount(String name) {
+    public void registerAccount(String name) {
         Account newAccount = new Account(name);
         leaderboard.add(newAccount);
     }
 
-    public static void updateAccount(String name, Boolean win) {
+    //MODIFIES: this
+    //REQUIRES: leaderboard is not empty
+    //EFFECTS: updates the stats of one account in leaderboard
+    public void updateAccount(String name, Boolean win) {
         for (Account a : leaderboard) {
             if (a.getUsername().equals(name)) {
                 a.updateAccount(win);
@@ -30,20 +33,8 @@ public class Leaderboard {
         }
     }
 
-    public static Boolean checkExisting(String name) {
-        Boolean exists = false;
-
-        for (Account a : leaderboard) {
-            if (a.getUsername().equals(name)) {
-                exists = true;
-            }
-        }
-        return exists;
-    }
-
-    // REQUIRES: account name is the name of an existing account
     // EFFECTS: returns account object that has name
-    public static Account lookupAccount(String name) {
+    public Account lookupAccount(String name) {
         Account acc = null;
         for (Account a : leaderboard) {
             if (a.getUsername().equalsIgnoreCase(name)) {
@@ -53,25 +44,29 @@ public class Leaderboard {
         return acc;
     }
 
-    //TODO Q: this method doesn't work sometimes -> TA said we will learn about iterators later
-    //REQUIRES: leaderboard.size() > 1
-    //EFFECTS: removes account from leaderboard
-    public static void removeAccount(String name) {
-        int count = 0;
-        for (Account a : leaderboard) {
-            if (name.equals(a.getUsername())) {
-                leaderboard.remove(count);
-            }
-            count++;
-        }
-    }
+//    //this method doesn't work sometimes -> prof said can fix this later, when we learn about iterators...
+//    //REQUIRES: leaderboard.size() > 1
+//    //EFFECTS: removes account from leaderboard
+//    public void removeAccount(String name) {
+//        int count = 0;
+//        for (Account a : leaderboard) {
+//            if (name.equals(a.getUsername())) {
+//                leaderboard.remove(count);
+//            }
+//            count++;
+//        }
+//    }
 
     //EFFECTS: prints out all accounts in leaderboard
-    public static void printAllAccounts() {
+    public void printAllAccounts() {
         System.out.println("\nusername | wins | games played\n");
         for (Account a : leaderboard) {
             System.out.println(a.getUsername() + " | " + a.getWins() + " | " + a.getGamesPlayed());
         }
         System.out.println("\n");
+    }
+
+    public ArrayList<Account> getLeaderboard() {
+        return this.leaderboard;
     }
 }

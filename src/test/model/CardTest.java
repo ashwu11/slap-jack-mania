@@ -24,9 +24,9 @@ class CardTest {
     }
 
     @Test
-    public void testGetCard() {
-        assertEquals("Ace of Hearts", aceHearts.getCard());
-        assertEquals("Two of Spades", twoSpades.getCard());
+    public void testGetCardName() {
+        assertEquals("Ace of Hearts", aceHearts.getCardName());
+        assertEquals("Two of Spades", twoSpades.getCardName());
     }
 
 }
