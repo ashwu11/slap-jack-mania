@@ -39,7 +39,7 @@ public class LeaderboardTest {
     }
 
     @Test
-    public void testUpdateAccountWin() {
+    public void testUpdateAccountSingleWin() {
         lb.registerAccount("win");
         lb.updateAccount("win", true);
         Account a = lb.getLeaderboard().get(0);
@@ -49,7 +49,7 @@ public class LeaderboardTest {
     }
 
     @Test
-    public void testUpdateAccountLoss() {
+    public void testUpdateAccountSingleLoss() {
         lb.registerAccount("loss");
         lb.updateAccount("loss", false);
         Account a = lb.getLeaderboard().get(0);
@@ -120,7 +120,7 @@ public class LeaderboardTest {
         assertNull(lb.lookupAccount("four"));
     }
 
-    @Test
+/*    @Test
     public void testPrintAllAccounts() {
         lb.registerAccount("one");
         lb.registerAccount("two");
@@ -130,7 +130,7 @@ public class LeaderboardTest {
         String expected = "\nusername | wins | games played\none | 1 | 1\ntwo | 0 | 1\n";
         // assertEquals(expected, lb.printAllAccounts())
         // TODO Q: it is a void method, so I'm not sure how to test print statements
-    }
+    }*/
 
 
 }

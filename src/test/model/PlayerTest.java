@@ -47,13 +47,37 @@ public class PlayerTest {
     }
 
     @Test
-    public void testFlipCard() {
+    public void testFlipCardOnce() {
         assertEquals(twoSpades, p1.flipCard());
         assertEquals(1, p1.getNumCardsLeft());
     }
 
     @Test
-    public void testAddCardsToHand() {
+    public void testFlipCardMultipleTimes() {
+        assertEquals(twoSpades, p1.flipCard());
+        assertEquals(1, p1.getNumCardsLeft());
+        assertEquals(aceHearts, p1.flipCard());
+        assertEquals(0, p1.getNumCardsLeft());
+    }
+
+    @Test
+    public void testAddCardsToHandOne() {
+        ArrayList<Card> cardsToAdd = new ArrayList<>();
+        cardsToAdd.add(threeDiamonds);
+
+        p2.addCardsToHand(cardsToAdd);
+        assertEquals(1, p2.getHand().size());
+        assertEquals(1, p2.getNumCardsLeft());
+        assertEquals(threeDiamonds, p2.flipCard());
+
+        p1.addCardsToHand(cardsToAdd);
+        assertEquals(3, p1.getHand().size());
+        assertEquals(3, p1.getNumCardsLeft());
+        assertEquals(aceHearts, p1.flipCard());
+    }
+
+    @Test
+    public void testAddCardsToHandMultiple() {
         ArrayList<Card> cardsToAdd = new ArrayList<>();
         cardsToAdd.add(threeDiamonds);
         cardsToAdd.add(fourClubs);

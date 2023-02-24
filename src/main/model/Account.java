@@ -20,9 +20,9 @@ public class Account {
     //MODIFIES: this
     //EFFECTS: adds 1 to games played and only add 1 to wins if win is true
     public void updateAccount(Boolean win) {
-        gamesPlayed += 1;
+        gamesPlayed++;
         if (win) {
-            wins += 1;
+            wins++;
         }
     }
 

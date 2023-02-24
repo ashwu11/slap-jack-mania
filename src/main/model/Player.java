@@ -30,6 +30,7 @@ public class Player {
         return hand.get(numCardsLeft);
     }
 
+    // REQUIRES: 0 < cards.size()
     // MODIFIES: this
     // EFFECTS: adds multiple cards to the player's hand
     public void addCardsToHand(ArrayList<Card> cards) {
