@@ -58,12 +58,12 @@ public class Leaderboard {
 //    }
 
     //EFFECTS: prints out all accounts in leaderboard
-    public void printAllAccounts() {
-        System.out.println("\nusername | wins | games played\n");
+    public String printAllAccounts() {
+        String all = "";
         for (Account a : leaderboard) {
-            System.out.println(a.getUsername() + " | " + a.getWins() + " | " + a.getGamesPlayed());
+            all = all.concat(a.getUsername() + " | " + a.getWins() + " | " + a.getGamesPlayed() + "\n");
         }
-        System.out.println("\n");
+        return all;
     }
 
     public ArrayList<Account> getLeaderboard() {

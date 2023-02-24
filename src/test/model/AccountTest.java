@@ -42,5 +42,12 @@ public class AccountTest {
         assertEquals(2, test1.getWins());
     }
 
+    @Test
+    public void testSetUsername() {
+        assertEquals("Test1", test1.getUsername());
+        test1.setUsername("not Test1");
+        assertEquals("not Test1", test1.getUsername());
+    }
+
 
 }

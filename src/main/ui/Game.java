@@ -15,43 +15,31 @@ public class Game {
     private Card.Value cardCount;
     private int cardCountInt;
     private int currentTurn;
-    private final ArrayList<String> playerNames;
-    private final ArrayList<Player> players;
-    private final ArrayList<ArrayList<Card>> playerDecks;
-    private final ArrayList<Card> cardsPlayed;
-    private final ArrayList<String> instructions = new ArrayList<>();
-    private final CardDeck cardDeck;
-    private final Scanner input;
+    private ArrayList<String> playerNames;
+    private ArrayList<Player> players;
+    private ArrayList<ArrayList<Card>> playerDecks;
+    private ArrayList<Card> cardsPlayed;
+    private ArrayList<String> instructions;
+    private CardDeck cardDeck;
+    private Scanner input;
     private final Leaderboard leaderboard;
     private Boolean start;
     private Boolean run;
     private Boolean end;
     private String winner;
+    private String key;
+    private int numberOfPlayers;
     private static final String PLAY_COMMAND = "play";
     private static final String QUIT_COMMAND = "quit";
     private static final String SAVE_COMMAND = "save";
     private static final String VIEW_COMMAND = "view";
     //private static final String REMOVE_COMMAND = "remove";
-    private String key;
-    private int numberOfPlayers;
-
 
     public Game() {
-        cardDeck = new CardDeck();
-        cardDeck.makeDeck();
-        cardsPlayed = new ArrayList<>();
-        playerNames = new ArrayList<>();
-        players = new ArrayList<>();
-        currentTurn = 0;
-        cardCount = Card.Value.Ace;
-        cardCountInt = 0;
-        playerDecks = new ArrayList<>();
+        initializeVariables();
         input = new Scanner(System.in);
-        start = true;
-        run = true;
-        end = true;
-        numberOfPlayers = 0;
         leaderboard = new Leaderboard();
+        System.out.println("\nWelcome to SlapJack Mania! \nTo start, please enter up to four player names.");
 
         try {
             runGame();
@@ -61,8 +49,8 @@ public class Game {
     }
 
     public void runGame() throws QuitGame {
+        initializeVariables();
         cardDeck.shuffleDeck();
-        System.out.println("\nWelcome to SlapJack Mania! \nTo start, please enter up to four player names.");
         handleInputStart();
         initializeAndDeal();
 
@@ -88,8 +76,23 @@ public class Game {
             acceptInput();
             handleInputAfter(key);
         }
+    }
 
-
+    private void initializeVariables() {
+        cardDeck = new CardDeck();
+        cardDeck.makeDeck();
+        cardsPlayed = new ArrayList<>();
+        playerNames = new ArrayList<>();
+        players = new ArrayList<>();
+        currentTurn = 0;
+        cardCount = Card.Value.Ace;
+        cardCountInt = 0;
+        playerDecks = new ArrayList<>();
+        start = true;
+        run = true;
+        end = true;
+        numberOfPlayers = 0;
+        instructions = new ArrayList<>();
     }
 
     private void acceptInput() {
@@ -163,7 +166,7 @@ public class Game {
     private void cardFlip(Player currentPlayer) {
         Card currentCard = currentPlayer.flipCard();
         cardsPlayed.add(currentCard);
-        System.out.println("\n -> " + currentPlayer.getName() + " flipped a card, " + cardCount + "!");
+        System.out.println("\n-> " + currentPlayer.getName() + " flipped a card, " + cardCount + "!");
     }
 
     private void cardSlap(String first, String last) throws InvalidSlapException {
@@ -208,12 +211,13 @@ public class Game {
                 currentTurn = players.indexOf(p) - 1;
                 p.addCardsToHand(cardsPlayed);
                 cardsPlayed.removeAll(cardsPlayed);
-                System.out.println("\n Oh no, " + p.getName() + " was the last to slap... \nTaking all the cards...");
+                System.out.println("\n-> Oh no, " + p.getName() + " was the last to slap...");
+                System.out.println("-> Taking all the cards...");
             }
             if (first.equals(p.getSlapKey())) {
-                System.out.println("\n Yay, " + p.getName() + " was the first to slap!");
+                System.out.println("\n-> Yay, " + p.getName() + " was the first to slap!");
                 if (randomNumber == 1) {
-                    System.out.println(" So speedy!");
+                    System.out.println("-> So speedy!");
                 }
 
             }
@@ -349,21 +353,29 @@ public class Game {
 
     //REQUIRES: input length > 0
     //EFFECTS handles the user input after a game
-    public void handleInputAfter(String word) {
+    public void handleInputAfter(String word) throws QuitGame {
 
         if (word.equals(SAVE_COMMAND)) {
             handleSave();
         } else if (word.equals(VIEW_COMMAND)) {
-            leaderboard.printAllAccounts();
-            //System.out.println("\nEnter '" + REMOVE_COMMAND + "' to remove an account"); //fix problem later
+            System.out.println("\nusername | wins | games played\n");
+            System.out.println(leaderboard.printAllAccounts());
+            System.out.println("\n");
+//            System.out.println("\nEnter '" + REMOVE_COMMAND + "' to remove an account"); //fix problem later
 //        }  else if (word.equals(REMOVE_COMMAND)) {
 //            handleRemove();
 //            leaderboard.printAllAccounts();
         } else if (word.equals(PLAY_COMMAND)) {
-            new Game();
+            try {
+                System.out.println("\nPlaying again! \nPlease enter up to four player names.");
+                runGame();
+            } catch (QuitGame e) {
+                System.out.println("Quitting game...");
+                end = false;
+            }
         } else if (word.equals(QUIT_COMMAND)) {
             System.out.println("\nThanks for playing :)");
-            end = false;
+            throw new QuitGame();
         } else {
             System.out.println("Invalid command!");
         }

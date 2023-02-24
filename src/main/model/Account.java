@@ -20,12 +20,11 @@ public class Account {
     //MODIFIES: this
     //EFFECTS: adds 1 to games played and only add 1 to wins if win is true
     public void updateAccount(Boolean win) {
-        gamesPlayed++;
+        this.gamesPlayed++;
         if (win) {
-            wins++;
+            this.wins++;
         }
     }
-
 
     // getters & setters
     public String getUsername() {

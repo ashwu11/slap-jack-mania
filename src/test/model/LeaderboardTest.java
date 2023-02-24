@@ -120,17 +120,23 @@ public class LeaderboardTest {
         assertNull(lb.lookupAccount("four"));
     }
 
-/*    @Test
+    @Test
+    public void testPrintAllAccountsOne() {
+        lb.registerAccount("one");
+        lb.updateAccount("one", false);
+        String expected = "one | 0 | 1\n";
+        assertEquals(expected, lb.printAllAccounts());
+    }
+
+    @Test
     public void testPrintAllAccounts() {
         lb.registerAccount("one");
         lb.registerAccount("two");
         lb.updateAccount("one", true);
         lb.updateAccount("two", false);
 
-        String expected = "\nusername | wins | games played\none | 1 | 1\ntwo | 0 | 1\n";
-        // assertEquals(expected, lb.printAllAccounts())
-        // TODO Q: it is a void method, so I'm not sure how to test print statements
-    }*/
-
+        String expected = "one | 1 | 1\ntwo | 0 | 1\n";
+        assertEquals(expected, lb.printAllAccounts());
+    }
 
 }

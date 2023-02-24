@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CardDeckTest {
     private CardDeck cards;
@@ -52,8 +51,6 @@ public class CardDeckTest {
         }
 
         assertFalse(beforeValues == afterValues);
-
-        //TODO Q: not sure if this is the right way to test this method because it involves random
     }
 
     @Test

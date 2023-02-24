@@ -98,4 +98,11 @@ public class PlayerTest {
         assertTrue(p2.checkEmpty());
         assertFalse(p1.checkEmpty());
     }
+
+    @Test
+    public void testSetNumCardsLeft() {
+        assertEquals(2, p1.getNumCardsLeft());
+        p1.setNumCardsLeft(1);
+        assertEquals(1, p1.getNumCardsLeft());
+    }
 }
