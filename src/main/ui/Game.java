@@ -12,35 +12,41 @@ import java.util.*;
  **/
 
 public class Game {
-    private Card.Value cardCount;
-    private int cardCountInt;
-    private int currentTurn;
     private ArrayList<String> playerNames;
     private ArrayList<Player> players;
     private ArrayList<ArrayList<Card>> playerDecks;
     private ArrayList<Card> cardsPlayed;
     private ArrayList<String> instructions;
     private CardDeck cardDeck;
-    private Scanner input;
-    private final Leaderboard leaderboard;
+    private Card.Value cardCount;
     private Boolean start;
     private Boolean run;
     private Boolean end;
     private String winner;
     private String key;
+    private int cardCountInt;
+    private int currentTurn;
     private int numberOfPlayers;
+    private final Scanner input;
+    private final Leaderboard leaderboard;
     private static final String PLAY_COMMAND = "play";
     private static final String QUIT_COMMAND = "quit";
     private static final String SAVE_COMMAND = "save";
     private static final String VIEW_COMMAND = "view";
     //private static final String REMOVE_COMMAND = "remove";
 
+    //EFFECTS: initializes a game
     public Game() {
         initializeVariables();
         input = new Scanner(System.in);
         leaderboard = new Leaderboard();
-        System.out.println("\nWelcome to SlapJack Mania! \nTo start, please enter up to four player names.");
+        instructions = new ArrayList<>();
+        instructions.add(" : 'x' to slap, 'c' to flip");
+        instructions.add(" : 'b' to slap, 'n' to flip");
+        instructions.add(" : 'q' to slap, 'a' to flip");
+        instructions.add(" : 'l' to slap, 'p' to flip");
 
+        System.out.println("\nWelcome to SlapJack Mania! \nTo start, please enter up to four player names.");
         try {
             runGame();
         } catch (QuitGame e) {
@@ -48,9 +54,10 @@ public class Game {
         }
     }
 
+    //MODIFIES: this
+    //EFFECTS: runs a game
     public void runGame() throws QuitGame {
         initializeVariables();
-        cardDeck.shuffleDeck();
         handleInputStart();
         initializeAndDeal();
 
@@ -78,9 +85,10 @@ public class Game {
         }
     }
 
+    //MODIFIES: this
+    //EFFECTS: resets all the required variables to start another game
     private void initializeVariables() {
         cardDeck = new CardDeck();
-        cardDeck.makeDeck();
         cardsPlayed = new ArrayList<>();
         playerNames = new ArrayList<>();
         players = new ArrayList<>();
@@ -92,16 +100,10 @@ public class Game {
         run = true;
         end = true;
         numberOfPlayers = 0;
-        instructions = new ArrayList<>();
-    }
-
-    private void acceptInput() {
-        key = input.nextLine();
-        key = key.toLowerCase();
     }
 
 
-    //EFFECTS: handles user input before the game until user quits
+    //EFFECTS: handles user input before the game starts, until the user quits
     public void handleInputStart() throws QuitGame {
         while (start) {
             try {
@@ -114,7 +116,33 @@ public class Game {
         System.out.println("\nGet ready to play!");
     }
 
+    //EFFECTS: prints instructions to get the game started
+    private void printInstructions() throws QuitGame, InvalidInputException {
+        System.out.println("\nWhen you are ready to play, enter '" + PLAY_COMMAND + "'");
+        System.out.println("To quit the app, enter '" + QUIT_COMMAND + "'\n");
+        String str;
+        str = input.nextLine();
+
+        if (str.equals(PLAY_COMMAND) || numberOfPlayers == 4) {
+            start = false;
+        } else if (str.equals(QUIT_COMMAND)) {
+            throw new QuitGame();
+        }  else if (str.isEmpty()) {
+            throw new InvalidInputException();
+        } else {
+            numberOfPlayers++;
+            playerNames.add(str);
+            printPlayers();
+            printInstructions();
+        }
+    }
+
+    //MODIFIES: this
+    //EFFECTS: initializes a deck of cards and deals cards to each player
     private void initializeAndDeal() {
+        cardDeck.makeDeck();
+        cardDeck.shuffleDeck();
+
         int cardsPerPerson = 52 / playerNames.size();
 
         for (int p = 0; p < playerNames.size(); p++) {
@@ -128,6 +156,15 @@ public class Game {
             Player player = new Player(playerNames.get(p), playerDecks.get(p), slapKey, flipKey);
             player.setNumCardsLeft(cardsPerPerson);
             players.add(player);
+        }
+    }
+
+    //EFFECTS: shows the cards that have been played so far
+    public void printCardsPlayed() {
+        System.out.println("Cards played:\n");
+
+        for (Card c : cardsPlayed) {
+            System.out.println(c.getCardName());
         }
     }
 
@@ -157,25 +194,45 @@ public class Game {
         }
     }
 
+    //EFFECTS: increments the cardCount during game
+    private void updateCardCount() {
+        ArrayList<Card.Value> values = new ArrayList<>();
+        Collections.addAll(values, Card.Value.values());
+
+        cardCountInt = (cardCountInt + 1) % values.size();
+        cardCount = values.get(cardCountInt);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: method that increments the next player's turn
+    private void updateCurrentTurn() {
+        this.currentTurn = (currentTurn + 1) % players.size();
+    }
+
+    //MODIFIES: this
+    //EFFECTS: handles the case when another player flips a card not during their turn
     private void wrongTurn() {
         System.out.println("\nNot your turn >:(");
         currentTurn--;
         cardCountInt--;
     }
 
+    //MODIFIES: this
+    //EFFECTS: handles the case when a player flips a card
     private void cardFlip(Player currentPlayer) {
         Card currentCard = currentPlayer.flipCard();
         cardsPlayed.add(currentCard);
         System.out.println("\n-> " + currentPlayer.getName() + " flipped a card, " + cardCount + "!");
     }
 
+    //EFFECTS: handles the case when players 'slap' the cardsPlayed
     private void cardSlap(String first, String last) throws InvalidSlapException {
         handleSlapInput(first, last);
         cardCount = Card.Value.Ace;
         cardCountInt = -1;
     }
 
-    //EFFECTS: handles the slap input
+    //EFFECTS: handles the case when users input a 'slap'
     private void handleSlapInput(String first, String last) throws InvalidSlapException {
         int size = cardsPlayed.size();
         boolean validSlap;
@@ -203,6 +260,7 @@ public class Game {
 
     }
 
+    //EFFECTS: handles the case when a correct slap occurs
     private void correctSlap(String first, String last) {
         Random random = new Random();
         int randomNumber = random.nextInt(3);
@@ -224,6 +282,7 @@ public class Game {
         }
     }
 
+    //EFFECTS: handles the case when an incorrect slap occurs
     private void incorrectSlap(String first) {
         for (Player p : players) {
             if (first.equals(p.getSlapKey())) {
@@ -235,8 +294,8 @@ public class Game {
         }
     }
 
-    // REQUIRES: key must be a single letter
-    // checks if the input is a playable command
+    //REQUIRES: key must be a single letter
+    //EFFECTS: checks if the input is a playable command
     public Boolean validInput(String key) {
         ArrayList<String> validKeys = new ArrayList<>();
         Player currentPlayer = players.get(currentTurn);
@@ -250,53 +309,7 @@ public class Game {
         return validKeys.contains(key);
     }
 
-    //EFFECTS: shows the cards that have been played so far
-    public void printCardsPlayed() {
-        System.out.println("Cards played:\n");
-
-        for (Card c : cardsPlayed) {
-            System.out.println(c.getCardName());
-        }
-    }
-
-    //MODIFIES: this
-    //EFFECTS: method that increments the next turn count
-    private void updateCurrentTurn() {
-        this.currentTurn = (currentTurn + 1) % players.size();
-    }
-
-    //EFFECTS: increments the cardCount during game
-    private void updateCardCount() {
-        ArrayList<Card.Value> values = new ArrayList<>();
-        Collections.addAll(values, Card.Value.values());
-
-        cardCountInt = (cardCountInt + 1) % values.size();
-        cardCount = values.get(cardCountInt);
-    }
-
-
-    //EFFECTS: prints instructions to start the game
-    private void printInstructions() throws QuitGame, InvalidInputException {
-        System.out.println("\nWhen you are ready to play, enter '" + PLAY_COMMAND + "'");
-        System.out.println("To quit the app, enter '" + QUIT_COMMAND + "'\n");
-        String str;
-        str = input.nextLine();
-
-        if (str.equals(PLAY_COMMAND) || numberOfPlayers == 4) {
-            start = false;
-        } else if (str.equals(QUIT_COMMAND)) {
-            throw new QuitGame();
-        }  else if (str.isEmpty()) {
-            throw new InvalidInputException();
-        } else {
-            numberOfPlayers++;
-            playerNames.add(str);
-            printPlayers();
-            printInstructions();
-        }
-    }
-
-    //EFFECTS: prints out players entered to play
+    //EFFECTS: prints out all players entered to play so far
     private void printPlayers() {
         System.out.println("\nCurrent players:");
         for (String p : playerNames) {
@@ -304,12 +317,8 @@ public class Game {
         }
     }
 
+    //EFFECTS: prints out the instructions for each player
     private void printKeys() {
-        instructions.add(" : 'x' to slap, 'c' to flip");
-        instructions.add(" : 'b' to slap, 'n' to flip");
-        instructions.add(" : 'q' to slap, 'a' to flip");
-        instructions.add(" : 'l' to slap, 'p' to flip");
-
         System.out.println("\nInstructions:");
         int c = 0;
         for (String p : playerNames) {
@@ -318,8 +327,8 @@ public class Game {
         }
     }
 
-
-    //EFFECTS: check whether the game is over
+    //MODIFIES: this
+    //EFFECTS: checks whether the game is over
     public boolean gameOver(String input) {
         boolean check = false;
         int least = 52;
@@ -361,7 +370,7 @@ public class Game {
             System.out.println("\nusername | wins | games played\n");
             System.out.println(leaderboard.printAllAccounts());
             System.out.println("\n");
-//            System.out.println("\nEnter '" + REMOVE_COMMAND + "' to remove an account"); //fix problem later
+//            System.out.println("\nEnter '" + REMOVE_COMMAND + "' to remove an account"); //prof said fix problem later
 //        }  else if (word.equals(REMOVE_COMMAND)) {
 //            handleRemove();
 //            leaderboard.printAllAccounts();
@@ -381,7 +390,8 @@ public class Game {
         }
     }
 
-    //EFFECTS: saves the current game
+    //MODIFIES: this
+    //EFFECTS: saves the current game by updating player accounts to the leaderboard
     private void handleSave() {
         System.out.println("\ngame saved!\n");
         for (Player p : players) {
@@ -395,6 +405,33 @@ public class Game {
         }
     }
 
+    //EFFECTS: updates the stats of each account in the leaderboard
+    private void updateAccounts(Player p) {
+        leaderboard.updateAccount(p.getName(), p.getName().equals(winner));
+    }
+
+    //EFFECTS: checks whether the Jack rule is met
+    private Boolean checkJackRule(Card first) {
+        return first.getValue() == Card.Value.Jack || first.getValue() == cardCount;
+    }
+
+    //EFFECTS: checks whether the Jack or Double rule is met
+    private Boolean checkTwoRules(Card first, Card second) {
+        return first.getValue() == second.getValue() || checkJackRule(first);
+    }
+
+    //EFFECTS: checks whether any of the rules are met
+    private Boolean checkAllRules(Card first, Card second, Card third) {
+        return checkTwoRules(first, second) || first.getValue() == third.getValue();
+    }
+
+    //EFFECTS: accepts the user input
+    private void acceptInput() {
+        key = input.nextLine();
+        key = key.toLowerCase();
+    }
+
+//    //Will add this function later
 //    //EFFECTS: removes an account from the leaderboards
 //    private void handleRemove() {
 //        System.out.println("\nEnter the account username you wish to remove: ");
@@ -403,22 +440,4 @@ public class Game {
 //        leaderboard.removeAccount(in);
 //        System.out.println("\nAccount '" + in + "' has been removed.\n");
 //    }
-
-    //EFFECTS: updates the stats of each account
-    private void updateAccounts(Player p) {
-        leaderboard.updateAccount(p.getName(), p.getName().equals(winner));
-    }
-
-    private Boolean checkJackRule(Card first) {
-        return first.getValue() == Card.Value.Jack || first.getValue() == cardCount;
-        // TODO Q: Don't know why card count rule isn't working :(
-    }
-
-    private Boolean checkTwoRules(Card first, Card second) {
-        return first.getValue() == second.getValue() || checkJackRule(first);
-    }
-
-    private Boolean checkAllRules(Card first, Card second, Card third) {
-        return checkTwoRules(first, second) || first.getValue() == third.getValue();
-    }
 }

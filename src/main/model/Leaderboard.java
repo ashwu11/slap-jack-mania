@@ -44,19 +44,6 @@ public class Leaderboard {
         return acc;
     }
 
-//    //this method doesn't work sometimes -> prof said can fix this later, when we learn about iterators...
-//    //REQUIRES: leaderboard.size() > 1
-//    //EFFECTS: removes account from leaderboard
-//    public void removeAccount(String name) {
-//        int count = 0;
-//        for (Account a : leaderboard) {
-//            if (name.equals(a.getUsername())) {
-//                leaderboard.remove(count);
-//            }
-//            count++;
-//        }
-//    }
-
     //EFFECTS: prints out all accounts in leaderboard
     public String printAllAccounts() {
         String all = "";
@@ -69,4 +56,17 @@ public class Leaderboard {
     public ArrayList<Account> getLeaderboard() {
         return this.leaderboard;
     }
+
+//    //this method doesn't work sometimes -> prof said can fix this later when we learn about iterators...
+//    //REQUIRES: leaderboard.size() > 1
+//    //EFFECTS: removes account from leaderboard
+//    public void removeAccount(String name) {
+//        int count = 0;
+//        for (Account a : leaderboard) {
+//            if (name.equals(a.getUsername())) {
+//                leaderboard.remove(count);
+//            }
+//            count++;
+//        }
+//    }
 }
