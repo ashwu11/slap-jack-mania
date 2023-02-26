@@ -16,7 +16,7 @@ public class Game {
     private ArrayList<Player> players;
     private ArrayList<ArrayList<Card>> playerDecks;
     private ArrayList<Card> cardsPlayed;
-    private ArrayList<String> instructions;
+    private final ArrayList<String> instructions;
     private CardDeck cardDeck;
     private Card.Value cardCount;
     private Boolean start;
@@ -116,6 +116,7 @@ public class Game {
         System.out.println("\nGet ready to play!");
     }
 
+    //Looked at long form problem (FitLifeGymChain) for help
     //EFFECTS: prints instructions to get the game started
     private void printInstructions() throws QuitGame, InvalidInputException {
         System.out.println("\nWhen you are ready to play, enter '" + PLAY_COMMAND + "'");
@@ -168,6 +169,7 @@ public class Game {
         }
     }
 
+    //Looked at long form problem (FitLifeGymChain) for help
     //EFFECTS: handles user input during the game
     private void handleInputGame(String word) throws InvalidInputException {
         Player currentPlayer = players.get(currentTurn);
@@ -243,10 +245,10 @@ public class Game {
             validSlap = checkAllRules(firstCard, secondCard, thirdCard);
         } else if (size >= 2) {
             Card firstCard = cardsPlayed.get(size - 1);
-            Card secondCard = cardsPlayed.get(size - 2);
+            Card secondCard = cardsPlayed.get(0);
             validSlap = checkTwoRules(firstCard, secondCard);
         } else if (size >= 1) {
-            Card firstCard = cardsPlayed.get(size - 1);
+            Card firstCard = cardsPlayed.get(0);
             validSlap = checkJackRule(firstCard);
         } else {
             throw new InvalidSlapException();
