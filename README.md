@@ -53,4 +53,7 @@ accounts by saving a game.
 - As a user, I want to be able to view the list of accounts saved.
 - As a user, I want to be able to slap a card.
 - As a user, I want to be able to remove (i.e. flip) a card.
-- As a user, I want to be able to quit the game.
+- As a user, I want to be able to quit a game.
+
+- As a user, when I quit the application, I want to be given the option to save the data from leaderboard
+- As a user, when I start the application, I want to be given the option to load the leaderboard from file

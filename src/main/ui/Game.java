@@ -4,7 +4,11 @@ import exceptions.InvalidInputException;
 import exceptions.InvalidSlapException;
 import exceptions.QuitGame;
 import model.*;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -27,13 +31,15 @@ public class Game {
     private int cardCountInt;
     private int currentTurn;
     private int numberOfPlayers;
+    private Leaderboard leaderboard;
     private final Scanner input;
-    private final Leaderboard leaderboard;
+    private final JsonWriter jsonWriter;
+    private final JsonReader jsonReader;
+    private static final String JSON_STORE = "./data/leaderboard.json";
     private static final String PLAY_COMMAND = "play";
     private static final String QUIT_COMMAND = "quit";
     private static final String SAVE_COMMAND = "save";
     private static final String VIEW_COMMAND = "view";
-    //private static final String REMOVE_COMMAND = "remove";
 
     //EFFECTS: initializes a game
     public Game() {
@@ -41,12 +47,15 @@ public class Game {
         input = new Scanner(System.in);
         leaderboard = new Leaderboard();
         instructions = new ArrayList<>();
-        instructions.add(" : 'x' to slap, 'c' to flip");
-        instructions.add(" : 'b' to slap, 'n' to flip");
-        instructions.add(" : 'q' to slap, 'a' to flip");
-        instructions.add(" : 'l' to slap, 'p' to flip");
+        instructions.add(" : 'z' to slap, 'c' to flip");
+        instructions.add(" : 'b' to slap, 'm' to flip");
+        instructions.add(" : '2' to slap, 'a' to flip");
+        instructions.add(" : 'l' to slap, '0' to flip");
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
 
-        System.out.println("\nWelcome to SlapJack Mania! \nTo start, please enter up to four player names.");
+        System.out.println("\nWelcome to SlapJack Mania!\nTo start the game, enter up to four player names.");
+
         try {
             runGame();
         } catch (QuitGame e) {
@@ -86,6 +95,30 @@ public class Game {
     }
 
     //MODIFIES: this
+    //EFFECTS: loads Leaderboard from file
+    private void loadLeaderboard() {
+        try {
+            leaderboard = jsonReader.read();
+            System.out.println("Loaded previous Leaderboard from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from " + JSON_STORE + " file :[");
+        }
+
+    }
+
+    //EFFECTS: saves Leaderboard to file
+    private void saveLeaderboard() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(leaderboard);
+            jsonWriter.close();
+            System.out.println("Saved current Leaderboard to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to " + JSON_STORE + " file :[");
+        }
+    }
+
+    //MODIFIES: this
     //EFFECTS: resets all the required variables to start another game
     private void initializeVariables() {
         cardDeck = new CardDeck();
@@ -119,12 +152,15 @@ public class Game {
     //Looked at long form problem (FitLifeGymChain) for help
     //EFFECTS: prints instructions to get the game started
     private void printInstructions() throws QuitGame, InvalidInputException {
-        System.out.println("\nWhen you are ready to play, enter '" + PLAY_COMMAND + "'");
-        System.out.println("To quit the app, enter '" + QUIT_COMMAND + "'\n");
+        System.out.println("\nOther Actions: \nEnter 'LOAD' to load previous leaderboard from file");
+        System.out.println("Enter '" + PLAY_COMMAND + "' when you are ready to play");
+        System.out.println("Enter '" + QUIT_COMMAND + "' to quit the app\n");
         String str;
         str = input.nextLine();
 
-        if (str.equals(PLAY_COMMAND) || numberOfPlayers == 4) {
+        if (str.equals("LOAD")) {
+            loadLeaderboard();
+        } else if (str.equals(PLAY_COMMAND) || numberOfPlayers == 4) {
             start = false;
         } else if (str.equals(QUIT_COMMAND)) {
             throw new QuitGame();
@@ -289,6 +325,7 @@ public class Game {
         for (Player p : players) {
             if (first.equals(p.getSlapKey())) {
                 System.out.println("\n Oh no, " + p.getName() + " wasn't supposed to slap!\n");
+                System.out.println("-> Taking all the cards...");
                 p.addCardsToHand(cardsPlayed);
                 cardsPlayed.removeAll(cardsPlayed);
                 currentTurn = players.indexOf(p) - 1;
@@ -360,6 +397,7 @@ public class Game {
         System.out.println("Enter '" + VIEW_COMMAND + "' to see the Leaderboard.");
         System.out.println("Enter '" + PLAY_COMMAND + "' to play again.");
         System.out.println("Enter '" + QUIT_COMMAND + "' to quit anytime.");
+        System.out.println("Enter 'SAVE' to save current leaderboard to file.");
     }
 
     //REQUIRES: input length > 0
@@ -368,6 +406,8 @@ public class Game {
 
         if (word.equals(SAVE_COMMAND)) {
             handleSave();
+        } else if (word.equals("SAVE")) {
+            saveLeaderboard();
         } else if (word.equals(VIEW_COMMAND)) {
             System.out.println("\nusername | wins | games played\n");
             System.out.println(leaderboard.printAllAccounts());
@@ -412,9 +452,21 @@ public class Game {
         leaderboard.updateAccount(p.getName(), p.getName().equals(winner));
     }
 
-    //EFFECTS: checks whether the Jack rule is met
+    //EFFECTS: checks whether the Jack rule and Count rule is met
     private Boolean checkJackRule(Card first) {
-        return first.getValue() == Card.Value.Jack || first.getValue() == cardCount;
+        return first.getValue() == Card.Value.Jack || first.getValue() == getPrevCard();
+    }
+
+    //EFFECTS: gets the previous card in the order of Card.Value
+    private Card.Value getPrevCard() {
+        ArrayList<Card.Value> values = new ArrayList<>();
+        Collections.addAll(values, Card.Value.values());
+        Card.Value prevCard;
+        int prevCardInt;
+
+        prevCardInt = (cardCountInt - 1) % values.size();
+        prevCard = values.get(prevCardInt);
+        return prevCard;
     }
 
     //EFFECTS: checks whether the Jack or Double rule is met

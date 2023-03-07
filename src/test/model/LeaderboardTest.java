@@ -15,34 +15,34 @@ public class LeaderboardTest {
 
     @Test
     public void testConstructor() {
-        assertEquals(0, lb.getLeaderboard().size());
+        assertEquals(0, lb.getAccounts().size());
     }
 
     @Test
     public void testRegisterAccountSingle() {
         lb.registerAccount("acc");
-        assertEquals(1, lb.getLeaderboard().size());
-        assertEquals("acc", lb.getLeaderboard().get(0).getUsername());
+        assertEquals(1, lb.getAccounts().size());
+        assertEquals("acc", lb.getAccounts().get(0).getUsername());
     }
 
     @Test
     public void testRegisterAccountMultiple() {
         lb.registerAccount("one");
-        assertEquals(1, lb.getLeaderboard().size());
-        assertEquals("one", lb.getLeaderboard().get(0).getUsername());
+        assertEquals(1, lb.getAccounts().size());
+        assertEquals("one", lb.getAccounts().get(0).getUsername());
         lb.registerAccount("two");
-        assertEquals(2, lb.getLeaderboard().size());
-        assertEquals("two", lb.getLeaderboard().get(1).getUsername());
+        assertEquals(2, lb.getAccounts().size());
+        assertEquals("two", lb.getAccounts().get(1).getUsername());
         lb.registerAccount("three");
-        assertEquals(3, lb.getLeaderboard().size());
-        assertEquals("three", lb.getLeaderboard().get(2).getUsername());
+        assertEquals(3, lb.getAccounts().size());
+        assertEquals("three", lb.getAccounts().get(2).getUsername());
     }
 
     @Test
     public void testUpdateAccountSingleWin() {
         lb.registerAccount("win");
         lb.updateAccount("win", true);
-        Account a = lb.getLeaderboard().get(0);
+        Account a = lb.getAccounts().get(0);
         assertEquals(1, a.getGamesPlayed());
         assertEquals(1, a.getWins());
 
@@ -52,7 +52,7 @@ public class LeaderboardTest {
     public void testUpdateAccountSingleLoss() {
         lb.registerAccount("loss");
         lb.updateAccount("loss", false);
-        Account a = lb.getLeaderboard().get(0);
+        Account a = lb.getAccounts().get(0);
         assertEquals(1, a.getGamesPlayed());
         assertEquals(0, a.getWins());
     }
@@ -62,7 +62,7 @@ public class LeaderboardTest {
         lb.registerAccount("one");
         lb.registerAccount("two");
         lb.registerAccount("three");
-        Account accOne = lb.getLeaderboard().get(0);
+        Account accOne = lb.getAccounts().get(0);
 
         lb.updateAccount("one", true);
         assertEquals(1, accOne.getGamesPlayed());
@@ -74,7 +74,7 @@ public class LeaderboardTest {
         lb.registerAccount("one");
         lb.registerAccount("two");
         lb.registerAccount("three");
-        Account accTwo = lb.getLeaderboard().get(1);
+        Account accTwo = lb.getAccounts().get(1);
 
         lb.updateAccount("two", false);
         assertEquals(1, accTwo.getGamesPlayed());
@@ -86,7 +86,7 @@ public class LeaderboardTest {
         lb.registerAccount("one");
         lb.registerAccount("two");
         lb.registerAccount("three");
-        Account accThree = lb.getLeaderboard().get(2);
+        Account accThree = lb.getAccounts().get(2);
 
         lb.updateAccount("three", true);
         assertEquals(1, accThree.getGamesPlayed());
@@ -98,7 +98,7 @@ public class LeaderboardTest {
         lb.registerAccount("one");
         lb.registerAccount("two");
         lb.registerAccount("three");
-        Account accOne = lb.getLeaderboard().get(0);
+        Account accOne = lb.getAccounts().get(0);
         assertEquals(accOne, lb.lookupAccount("one"));
 
     }
@@ -108,7 +108,7 @@ public class LeaderboardTest {
         lb.registerAccount("one");
         lb.registerAccount("two");
         lb.registerAccount("three");
-        Account accThree = lb.getLeaderboard().get(2);
+        Account accThree = lb.getAccounts().get(2);
         assertEquals(accThree, lb.lookupAccount("three"));
     }
 

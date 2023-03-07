@@ -1,9 +1,6 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.Random;
-
-import model.Card;
 
 /**
  * Represents a deck of 52 cards. There are four suits: Diamonds, Clubs, Hearts, Spades.
@@ -11,7 +8,7 @@ import model.Card;
  **/
 
 public class CardDeck {
-    private Card[] cards;
+    private final Card[] cards;
     private int numCards;
 
     //EFFECTS: creates a deck of 52 cards
@@ -41,9 +38,9 @@ public class CardDeck {
 
         for (int i = 0; i < cards.length; i++) {
             int randomNumber = random.nextInt(cards.length - 1);
-            Card randomCard = cards[randomNumber]; // get a card at a random index value
-            cards[randomNumber] = cards[i];       // swap the index of the card we got with the card we're at
-            cards[i] = randomCard;               // set the actual card to the random card we got earlier
+            Card randomCard = cards[randomNumber]; // gets a random card
+            cards[randomNumber] = cards[i];       // swaps the current card to the index of random number
+            cards[i] = randomCard;               // sets the current card to the random card we got earlier
         }
     }
 

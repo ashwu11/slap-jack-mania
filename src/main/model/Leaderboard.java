@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -7,11 +9,16 @@ import java.util.ArrayList;
  **/
 
 public class Leaderboard {
-    private final ArrayList<Account> leaderboard;
+    private ArrayList<Account> accounts;
+    //private final HashMap<String, Account> leaderboard2;
 
     //EFFECTS: makes a new list of accounts
     public Leaderboard() {
-        leaderboard = new ArrayList<>();
+        accounts = new ArrayList<>();
+    }
+
+    public Leaderboard(ArrayList<Account> accounts) {
+        this.accounts = accounts;
     }
 
     //MODIFIES: this
@@ -19,14 +26,14 @@ public class Leaderboard {
     //EFFECTS: creates and adds an account to the leaderboard
     public void registerAccount(String name) {
         Account newAccount = new Account(name);
-        leaderboard.add(newAccount);
+        accounts.add(newAccount);
     }
 
     //MODIFIES: this
     //REQUIRES: leaderboard is not empty
     //EFFECTS: updates the stats of one account in leaderboard
     public void updateAccount(String name, Boolean win) {
-        for (Account a : leaderboard) {
+        for (Account a : accounts) {
             if (a.getUsername().equals(name)) {
                 a.updateAccount(win);
             }
@@ -36,7 +43,7 @@ public class Leaderboard {
     // EFFECTS: returns account object that has name
     public Account lookupAccount(String name) {
         Account acc = null;
-        for (Account a : leaderboard) {
+        for (Account a : accounts) {
             if (a.getUsername().equalsIgnoreCase(name)) {
                 acc = a;
             }
@@ -47,14 +54,20 @@ public class Leaderboard {
     //EFFECTS: prints out all accounts in leaderboard
     public String printAllAccounts() {
         String all = "";
-        for (Account a : leaderboard) {
+        for (Account a : accounts) {
             all = all.concat(a.getUsername() + " | " + a.getWins() + " | " + a.getGamesPlayed() + "\n");
         }
         return all;
     }
 
-    public ArrayList<Account> getLeaderboard() {
-        return this.leaderboard;
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("accounts", this.accounts);
+        return json;
+    }
+
+    public ArrayList<Account> getAccounts() {
+        return this.accounts;
     }
 
 //    //this method doesn't work sometimes -> prof said can fix this later when we learn about iterators...
