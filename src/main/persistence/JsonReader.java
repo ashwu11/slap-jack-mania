@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 // Modeled after Json Serialization Demo
 // Represents a reader that reads workroom from JSON data stored in file
 public class JsonReader {
-    private String source;
+    private final String source;
 
     // EFFECTS: constructs reader to read from source file
     public JsonReader(String source) {
@@ -41,17 +41,20 @@ public class JsonReader {
         return contentBuilder.toString();
     }
 
-    // TODO I casted the object retrieved from JsonObject as an Account,
-    //  not sure if this is what I was supposed to do
     // EFFECTS: parses Leaderboard from JSON object and returns it
     private Leaderboard parseLeaderboard(JSONObject jsonObject) {
-        //ArrayList<Account> accounts = jsonObject.get("accounts");
-
         JSONArray jsonAccounts = jsonObject.getJSONArray("accounts");
         ArrayList<Account> accounts = new ArrayList<>();
+
         for (int i = 0; i < jsonAccounts.length(); i++) {
-            Account a = (Account) jsonAccounts.get(i);
-            accounts.add(a);
+            JSONObject a = (JSONObject) jsonAccounts.get(i);
+            String user = a.getString("username");
+            int wins = a.getInt("wins");
+            int games = a.getInt("gamesPlayed");
+            Account acc = new Account(user);
+            acc.setWins(wins);
+            acc.setGamesPlayed(games);
+            accounts.add(acc);
         }
 
         return new Leaderboard(accounts);

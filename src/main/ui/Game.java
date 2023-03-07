@@ -99,22 +99,22 @@ public class Game {
     private void loadLeaderboard() {
         try {
             leaderboard = jsonReader.read();
-            System.out.println("Loaded previous Leaderboard from " + JSON_STORE);
+            System.out.println("\nLoaded previous Leaderboard from " + JSON_STORE);
         } catch (IOException e) {
-            System.out.println("Unable to read from " + JSON_STORE + " file :[");
+            System.out.println("\nUnable to read from " + JSON_STORE + " file :[");
         }
 
     }
 
     //EFFECTS: saves Leaderboard to file
-    private void saveLeaderboard() {
+    private void storeLeaderboard() {
         try {
             jsonWriter.open();
             jsonWriter.write(leaderboard);
             jsonWriter.close();
-            System.out.println("Saved current Leaderboard to " + JSON_STORE);
+            System.out.println("\nSaved current Leaderboard to " + JSON_STORE);
         } catch (FileNotFoundException e) {
-            System.out.println("Unable to write to " + JSON_STORE + " file :[");
+            System.out.println("\nUnable to write to " + JSON_STORE + " file :[");
         }
     }
 
@@ -394,10 +394,10 @@ public class Game {
 
     //EFFECTS: prints the instructions after a game
     private void instructionsAfterGame() {
-        System.out.println("Enter '" + VIEW_COMMAND + "' to see the Leaderboard.");
+        System.out.println("\nEnter '" + VIEW_COMMAND + "' to see the Leaderboard.");
         System.out.println("Enter '" + PLAY_COMMAND + "' to play again.");
         System.out.println("Enter '" + QUIT_COMMAND + "' to quit anytime.");
-        System.out.println("Enter 'SAVE' to save current leaderboard to file.");
+        System.out.println("Enter 'store' to store current leaderboard to file.");
     }
 
     //REQUIRES: input length > 0
@@ -406,8 +406,8 @@ public class Game {
 
         if (word.equals(SAVE_COMMAND)) {
             handleSave();
-        } else if (word.equals("SAVE")) {
-            saveLeaderboard();
+        } else if (word.equals("store")) {
+            storeLeaderboard();
         } else if (word.equals(VIEW_COMMAND)) {
             System.out.println("\nusername | wins | games played\n");
             System.out.println(leaderboard.printAllAccounts());

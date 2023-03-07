@@ -39,8 +39,16 @@ public class Account {
         return wins;
     }
 
+    public void setWins(int wins) {
+        this.wins = wins;
+    }
+
     public int getGamesPlayed() {
         return gamesPlayed;
+    }
+
+    public void setGamesPlayed(int gamesPlayed) {
+        this.gamesPlayed = gamesPlayed;
     }
 
 }
