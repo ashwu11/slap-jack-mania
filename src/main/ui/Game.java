@@ -64,16 +64,14 @@ public class Game {
     }
 
     //MODIFIES: this
-    //EFFECTS: runs a game
+    //EFFECTS: runs the game based on user input
     public void runGame() throws QuitGame {
         initializeVariables();
         handleInputStart();
         initializeAndDeal();
 
         while (run) {
-            System.out.println("\nIt's " + playerNames.get(currentTurn) + "'s turn");
-            printCardsPlayed();
-            acceptInput();
+            beginRound();
 
             try {
                 handleInputGame(key);
@@ -84,14 +82,30 @@ public class Game {
             }
         }
 
-        System.out.println("\nThe winner is " + winner + "! Good game.");
-        System.out.println("\nEnter '" + SAVE_COMMAND + "' to save the game.");
+        congratulate();
 
         while (end) {
             instructionsAfterGame();
             acceptInput();
-            handleInputAfter(key);
+            try {
+                handleInputAfter(key);
+            } catch (InvalidInputException e) {
+                System.err.println("That was an invalid input :(");
+            }
         }
+    }
+
+    //EFFECTS: helper that initializes each round in the game
+    private void beginRound() {
+        System.out.println("\nIt's " + playerNames.get(currentTurn) + "'s turn");
+        printCardsPlayed();
+        acceptInput();
+    }
+
+    //EFFECTS: helper that prints text after a game
+    private void congratulate() {
+        System.out.println("\nThe winner is " + winner + "! Good game.");
+        System.out.println("\nEnter '" + SAVE_COMMAND + "' to save the game.");
     }
 
     //MODIFIES: this
@@ -103,7 +117,6 @@ public class Game {
         } catch (IOException e) {
             System.out.println("\nUnable to read from " + JSON_STORE + " file :[");
         }
-
     }
 
     //EFFECTS: saves Leaderboard to file
@@ -119,7 +132,7 @@ public class Game {
     }
 
     //MODIFIES: this
-    //EFFECTS: resets all the required variables to start another game
+    //EFFECTS: resets the required variables to start a new game
     private void initializeVariables() {
         cardDeck = new CardDeck();
         cardsPlayed = new ArrayList<>();
@@ -149,8 +162,11 @@ public class Game {
         System.out.println("\nGet ready to play!");
     }
 
-    //Looked at long form problem (FitLifeGymChain) for help
+    //Modeled after long form problem: FitLifeGymChain
+    //MODIFIES: this
     //EFFECTS: prints instructions to get the game started
+    // if QUIT_COMMAND is entered, throw a QuitGame exception
+    // if empty string is entered, throw an InvalidInputException
     private void printInstructions() throws QuitGame, InvalidInputException {
         System.out.println("\nOther Actions: \nEnter 'LOAD' to load previous leaderboard from file");
         System.out.println("Enter '" + PLAY_COMMAND + "' when you are ready to play");
@@ -196,7 +212,7 @@ public class Game {
         }
     }
 
-    //EFFECTS: shows the cards that have been played so far
+    //EFFECTS: prints the cards that have been played so far
     public void printCardsPlayed() {
         System.out.println("Cards played:\n");
 
@@ -205,8 +221,10 @@ public class Game {
         }
     }
 
-    //Looked at long form problem (FitLifeGymChain) for help
+    //Modeled after long form problem: FitLifeGymChain
+    //MODIFIES: this
     //EFFECTS: handles user input during the game
+    // if empty string is entered, throw InvalidInputException
     private void handleInputGame(String word) throws InvalidInputException {
         Player currentPlayer = players.get(currentTurn);
 
@@ -232,7 +250,8 @@ public class Game {
         }
     }
 
-    //EFFECTS: increments the cardCount during game
+    //MODIFIES: this
+    //EFFECTS: increments the cardCount by one value during game
     private void updateCardCount() {
         ArrayList<Card.Value> values = new ArrayList<>();
         Collections.addAll(values, Card.Value.values());
@@ -242,13 +261,13 @@ public class Game {
     }
 
     //MODIFIES: this
-    //EFFECTS: method that increments the next player's turn
+    //EFFECTS: increments the next player's turn by one
     private void updateCurrentTurn() {
         this.currentTurn = (currentTurn + 1) % players.size();
     }
 
     //MODIFIES: this
-    //EFFECTS: handles the case when another player flips a card not during their turn
+    //EFFECTS: handles the case when the wrong player flips a card
     private void wrongTurn() {
         System.out.println("\nNot your turn >:(");
         currentTurn--;
@@ -256,13 +275,14 @@ public class Game {
     }
 
     //MODIFIES: this
-    //EFFECTS: handles the case when a player flips a card
+    //EFFECTS: handles the case when the correct player flips a card
     private void cardFlip(Player currentPlayer) {
         Card currentCard = currentPlayer.flipCard();
         cardsPlayed.add(currentCard);
         System.out.println("\n-> " + currentPlayer.getName() + " flipped a card, " + cardCount + "!");
     }
 
+    //MODIFIES: this
     //EFFECTS: handles the case when players 'slap' the cardsPlayed
     private void cardSlap(String first, String last) throws InvalidSlapException {
         handleSlapInput(first, last);
@@ -270,10 +290,12 @@ public class Game {
         cardCountInt = -1;
     }
 
-    //EFFECTS: handles the case when users input a 'slap'
+    //EFFECTS: handles the case when users input a 'slap' string
+    // if no cards have been played yet, throw an InvalidSlapException
     private void handleSlapInput(String first, String last) throws InvalidSlapException {
         int size = cardsPlayed.size();
         boolean validSlap;
+
         if (size >= 3) {
             Card firstCard = cardsPlayed.get(size - 1);
             Card secondCard = cardsPlayed.get(size - 2);
@@ -298,28 +320,31 @@ public class Game {
 
     }
 
+    //MODIFIES: this
     //EFFECTS: handles the case when a correct slap occurs
     private void correctSlap(String first, String last) {
         Random random = new Random();
         int randomNumber = random.nextInt(3);
+
         for (Player p : players) {
             if (last.equals(p.getSlapKey())) {
                 currentTurn = players.indexOf(p) - 1;
                 p.addCardsToHand(cardsPlayed);
-                cardsPlayed.removeAll(cardsPlayed);
+                cardsPlayed.clear();
                 System.out.println("\n-> Oh no, " + p.getName() + " was the last to slap...");
                 System.out.println("-> Taking all the cards...");
             }
+
             if (first.equals(p.getSlapKey())) {
                 System.out.println("\n-> Yay, " + p.getName() + " was the first to slap!");
                 if (randomNumber == 1) {
                     System.out.println("-> So speedy!");
                 }
-
             }
         }
     }
 
+    //MODIFIES: this
     //EFFECTS: handles the case when an incorrect slap occurs
     private void incorrectSlap(String first) {
         for (Player p : players) {
@@ -327,7 +352,7 @@ public class Game {
                 System.out.println("\n Oh no, " + p.getName() + " wasn't supposed to slap!\n");
                 System.out.println("-> Taking all the cards...");
                 p.addCardsToHand(cardsPlayed);
-                cardsPlayed.removeAll(cardsPlayed);
+                cardsPlayed.clear();
                 currentTurn = players.indexOf(p) - 1;
             }
         }
@@ -356,7 +381,7 @@ public class Game {
         }
     }
 
-    //EFFECTS: prints out the instructions for each player
+    //EFFECTS: prints out the control instructions for each player
     private void printKeys() {
         System.out.println("\nInstructions:");
         int c = 0;
@@ -367,7 +392,7 @@ public class Game {
     }
 
     //MODIFIES: this
-    //EFFECTS: checks whether the game is over
+    //EFFECTS: checks whether the game is over and updates the winner
     public boolean gameOver(String input) {
         boolean check = false;
         int least = 52;
@@ -400,23 +425,33 @@ public class Game {
         System.out.println("Enter 'store' to store current leaderboard to file.");
     }
 
-    //REQUIRES: input length > 0
+    //MODIFIES: this
     //EFFECTS handles the user input after a game
-    public void handleInputAfter(String word) throws QuitGame {
+    // if empty string is entered, throw InvalidInputException
+    public void handleInputAfter(String word) throws QuitGame, InvalidInputException {
 
-        if (word.equals(SAVE_COMMAND)) {
+        if (word.isEmpty()) {
+            throw new InvalidInputException();
+        } else if (word.equals(SAVE_COMMAND)) {
             handleSave();
         } else if (word.equals("store")) {
             storeLeaderboard();
-        } else if (word.equals(VIEW_COMMAND)) {
-            System.out.println("\nusername | wins | games played\n");
-            System.out.println(leaderboard.printAllAccounts());
-            System.out.println("\n");
+        }
+
+        if (word.equals(VIEW_COMMAND)) {
+            System.out.println("\nusername | wins | games played\n" + leaderboard.printAllAccounts() + "\n");
 //            System.out.println("\nEnter '" + REMOVE_COMMAND + "' to remove an account"); //prof said fix problem later
 //        }  else if (word.equals(REMOVE_COMMAND)) {
 //            handleRemove();
 //            leaderboard.printAllAccounts();
-        } else if (word.equals(PLAY_COMMAND)) {
+        }
+
+        if (word.equals(QUIT_COMMAND)) {
+            System.out.println("\nThanks for playing :)");
+            throw new QuitGame();
+        }
+
+        if (word.equals(PLAY_COMMAND)) {
             try {
                 System.out.println("\nPlaying again! \nPlease enter up to four player names.");
                 runGame();
@@ -424,11 +459,6 @@ public class Game {
                 System.out.println("Quitting game...");
                 end = false;
             }
-        } else if (word.equals(QUIT_COMMAND)) {
-            System.out.println("\nThanks for playing :)");
-            throw new QuitGame();
-        } else {
-            System.out.println("Invalid command!");
         }
     }
 
@@ -447,6 +477,7 @@ public class Game {
         }
     }
 
+    //MODIFIES: this
     //EFFECTS: updates the stats of each account in the leaderboard
     private void updateAccounts(Player p) {
         leaderboard.updateAccount(p.getName(), p.getName().equals(winner));
@@ -457,7 +488,7 @@ public class Game {
         return first.getValue() == Card.Value.Jack || first.getValue() == getPrevCard();
     }
 
-    //EFFECTS: gets the previous card in the order of Card.Value
+    //EFFECTS: helper that gets the previous card in the order of Card.Value
     private Card.Value getPrevCard() {
         ArrayList<Card.Value> values = new ArrayList<>();
         Collections.addAll(values, Card.Value.values());
@@ -479,7 +510,8 @@ public class Game {
         return checkTwoRules(first, second) || first.getValue() == third.getValue();
     }
 
-    //EFFECTS: accepts the user input
+    //MODIFIES: this
+    //EFFECTS: helper that accepts the user input
     private void acceptInput() {
         key = input.nextLine();
         key = key.toLowerCase();
