@@ -42,7 +42,7 @@ public class Game {
     private static final String VIEW_COMMAND = "view";
 
     //EFFECTS: initializes a game
-    public Game() {
+    public Game() throws FileNotFoundException {  // TODO Q: why do we need to throw this exception here?
         initializeVariables();
         input = new Scanner(System.in);
         leaderboard = new Leaderboard();

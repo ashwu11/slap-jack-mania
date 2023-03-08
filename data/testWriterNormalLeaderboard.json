@@ -1,0 +1,12 @@
+{"accounts": [
+    {
+        "wins": 0,
+        "gamesPlayed": 2,
+        "username": "anya"
+    },
+    {
+        "wins": 2,
+        "gamesPlayed": 2,
+        "username": "bond"
+    }
+]}
