@@ -3,17 +3,18 @@ package model;
 import java.util.ArrayList;
 import java.util.Collections;
 
-/**
- * Represents a player in a game with a name, cards in hand, and slap and flip buttons
- **/
+/*
+ * Represents a player in the game
+ */
 
 public class Player {
-    private String name;
-    private ArrayList<Card> hand;
-    private String slap;
-    private String flip;
+    private final String name;
+    private final ArrayList<Card> hand;
+    private final String slap;
+    private final String flip;
     private int numCardsLeft;
 
+    //EFFECTS: constructs a player with a name, their hand of cards, and slap and flip controls
     public Player(String name, ArrayList<Card> hand, String slap, String flip) {
         this.name = name;
         this.hand = hand;
@@ -22,10 +23,10 @@ public class Player {
         numCardsLeft = this.hand.size();
     }
 
-    // MODIFIES: this
     // REQUIRES: player hand is not empty
+    // MODIFIES: this
     // EFFECTS: returns the top card from player's hand (and removes it from hand)
-    public Card flipCard() {  // change void to Card
+    public Card flipCard() {
         numCardsLeft -= 1;
         return hand.get(numCardsLeft);
     }
@@ -39,12 +40,12 @@ public class Player {
         Collections.reverse(hand);
     }
 
-
-    //EFFECTS: checks if the player had no cards left
+    //EFFECTS: checks if the player has no cards left
     public Boolean checkEmpty() {
         return numCardsLeft == 0;
     }
 
+    //getters & setters
     public void setNumCardsLeft(int n) {
         numCardsLeft = n;
     }

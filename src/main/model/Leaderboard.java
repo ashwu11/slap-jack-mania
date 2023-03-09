@@ -4,19 +4,20 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * Represents a leaderboard displaying each account and its corresponding stats
- **/
+/*
+ * Represents a leaderboard with a list of accounts
+ */
 
 public class Leaderboard {
-    private ArrayList<Account> accounts;
+    private final ArrayList<Account> accounts;
     //private final HashMap<String, Account> leaderboard2;
 
-    //EFFECTS: makes a new list of accounts
+    //EFFECTS: makes a new leaderboard with an empty list of accounts
     public Leaderboard() {
         accounts = new ArrayList<>();
     }
 
+    //EFFECTS: makes a new leaderboard with the specified list of accounts
     public Leaderboard(ArrayList<Account> accounts) {
         this.accounts = accounts;
     }
@@ -55,22 +56,24 @@ public class Leaderboard {
     public String printAllAccounts() {
         String all = "";
         for (Account a : accounts) {
-            all = all.concat(a.getUsername() + " | " + a.getWins() + " | " + a.getGamesPlayed() + "\n");
+            all = all.concat(a.getUsername() + " :  " + a.getWins() + "  |  " + a.getGamesPlayed() + "\n");
         }
         return all;
     }
 
+    //EFFECTS: puts the list of accounts in json object and returns it
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("accounts", this.accounts);
         return json;
     }
 
+    //getters
     public ArrayList<Account> getAccounts() {
         return this.accounts;
     }
 
-//    //this method doesn't work sometimes -> prof said can fix this later when we learn about iterators...
+//    //fix this method later when we learn about iterators...
 //    //REQUIRES: leaderboard.size() > 1
 //    //EFFECTS: removes account from leaderboard
 //    public void removeAccount(String name) {

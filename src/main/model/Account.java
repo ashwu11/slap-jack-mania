@@ -1,16 +1,15 @@
 package model;
 
-/**
- * Represents an account with a username, status quote, number of wins, number of games played,
- * current win streak, and highest win streak.
- **/
+/*
+ * Represents an account with a username, number of wins, and number of games played.
+ */
 
 public class Account {
     private String username;
     private int wins;
     private int gamesPlayed;
 
-    //EFFECTS: creates a new account with specified username and 0 wins and 0 games played
+    //EFFECTS: creates a new account with username and 0 wins and 0 games played
     public Account(String username) {
         this.username = username;
         wins = 0;
@@ -18,7 +17,7 @@ public class Account {
     }
 
     //MODIFIES: this
-    //EFFECTS: adds 1 to games played and only add 1 to wins if win is true
+    //EFFECTS: adds 1 to games played and only add 1 to wins if win state is true
     public void updateAccount(Boolean win) {
         this.gamesPlayed++;
         if (win) {

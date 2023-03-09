@@ -1,19 +1,19 @@
 package model;
 
-/**
- * Represents a card with a suit and value
- **/
+/*
+ * Represents a card with a suit and a value
+ */
 
 public class Card {
-    private Suit suit;
-    private Value value;
+    private final Suit suit;
+    private final Value value;
 
     public enum Suit {
-        Diamonds, Clubs, Hearts, Spades;
+        Diamonds, Clubs, Hearts, Spades
     }
 
     public enum Value {
-        Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King;
+        Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King
     }
 
     //EFFECTS: makes a card with specified value and suit
@@ -27,6 +27,7 @@ public class Card {
         return value + " of " + suit;
     }
 
+    // getters & setters
     public Suit getSuit() {
         return suit;
     }

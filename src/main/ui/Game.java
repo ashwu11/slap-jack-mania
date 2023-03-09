@@ -1,11 +1,12 @@
 package ui;
 
-import exceptions.InvalidInputException;
-import exceptions.InvalidSlapException;
-import exceptions.QuitGame;
+
 import model.*;
 import persistence.JsonReader;
 import persistence.JsonWriter;
+import ui.exceptions.InvalidInputException;
+import ui.exceptions.InvalidSlapException;
+import ui.exceptions.QuitGame;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class Game {
     private static final String SAVE_COMMAND = "save";
     private static final String VIEW_COMMAND = "view";
 
-    //EFFECTS: initializes a game
+    //EFFECTS: constructs a game
     public Game() throws FileNotFoundException {  // TODO Q: why do we need to throw this exception here?
         initializeVariables();
         input = new Scanner(System.in);
@@ -64,7 +65,7 @@ public class Game {
     }
 
     //MODIFIES: this
-    //EFFECTS: runs the game based on user input
+    //EFFECTS: runs a game based on user input
     public void runGame() throws QuitGame {
         initializeVariables();
         handleInputStart();
@@ -102,7 +103,7 @@ public class Game {
         acceptInput();
     }
 
-    //EFFECTS: helper that prints text after a game
+    //EFFECTS: helper that prints congratulatory text after a game
     private void congratulate() {
         System.out.println("\nThe winner is " + winner + "! Good game.");
         System.out.println("\nEnter '" + SAVE_COMMAND + "' to save the game.");
@@ -147,7 +148,6 @@ public class Game {
         end = true;
         numberOfPlayers = 0;
     }
-
 
     //EFFECTS: handles user input before the game starts, until the user quits
     public void handleInputStart() throws QuitGame {
@@ -439,7 +439,7 @@ public class Game {
         }
 
         if (word.equals(VIEW_COMMAND)) {
-            System.out.println("\nusername | wins | games played\n" + leaderboard.printAllAccounts() + "\n");
+            System.out.println("\nusername : wins | games played\n" + leaderboard.printAllAccounts() + "\n");
 //            System.out.println("\nEnter '" + REMOVE_COMMAND + "' to remove an account"); //prof said fix problem later
 //        }  else if (word.equals(REMOVE_COMMAND)) {
 //            handleRemove();

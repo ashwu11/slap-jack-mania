@@ -124,7 +124,7 @@ public class LeaderboardTest {
     public void testPrintAllAccountsOne() {
         lb.registerAccount("one");
         lb.updateAccount("one", false);
-        String expected = "one | 0 | 1\n";
+        String expected = "one :  0  |  1\n";
         assertEquals(expected, lb.printAllAccounts());
     }
 
@@ -135,7 +135,7 @@ public class LeaderboardTest {
         lb.updateAccount("one", true);
         lb.updateAccount("two", false);
 
-        String expected = "one | 1 | 1\ntwo | 0 | 1\n";
+        String expected = "one :  1  |  1\ntwo :  0  |  1\n";
         assertEquals(expected, lb.printAllAccounts());
     }
 

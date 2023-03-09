@@ -2,10 +2,10 @@ package model;
 
 import java.util.Random;
 
-/**
+/*
  * Represents a deck of 52 cards. There are four suits: Diamonds, Clubs, Hearts, Spades.
  * Each suit has the following values: Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King
- **/
+ */
 
 public class CardDeck {
     private final Card[] cards;
@@ -38,24 +38,26 @@ public class CardDeck {
 
         for (int i = 0; i < cards.length; i++) {
             int randomNumber = random.nextInt(cards.length - 1);
-            Card randomCard = cards[randomNumber]; // gets a random card
-            cards[randomNumber] = cards[i];       // swaps the current card to the index of random number
-            cards[i] = randomCard;               // sets the current card to the random card we got earlier
+            Card randomCard = cards[randomNumber];
+            cards[randomNumber] = cards[i];
+            cards[i] = randomCard;
         }
     }
 
+    //MODIFIES: this
     //REQUIRES: 0 < c < 52
     //EFFECTS: deals the number of cards from the deck
-    public Card[] dealCards(int c) {  // c is number of cards a player gets, depends on the number of players playing
+    public Card[] dealCards(int c) {
         Card[] stack = new Card[c];
 
         for (int i = 0; i < c; i++) {
             numCards--;
-            stack[i] = cards[numCards]; // deal from the top of the deck
+            stack[i] = cards[numCards];
         }
         return stack;
     }
 
+    //getters
     public int getNumCards() {
         return this.numCards;
     }
