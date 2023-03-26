@@ -57,3 +57,12 @@ accounts by saving a game.
 
 - As a user, when I finish the game, I want to be given the option to save the leaderboard to file
 - As a user, when I start the application, I want to be given the option to load the leaderboard from file
+
+
+# Instructions for Grader
+
+- You can generate the first required action related to adding Xs to a Y by...
+- You can generate the second required action related to adding Xs to a Y by...
+- You can locate my visual component by starting the application
+- You can save the state of my application by...
+- You can reload the state of my application by clicking the 'Load Game' button when the application starts

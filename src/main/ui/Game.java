@@ -8,6 +8,10 @@ import ui.exceptions.InvalidInputException;
 import ui.exceptions.InvalidSlapException;
 import ui.exceptions.QuitGame;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -16,7 +20,7 @@ import java.util.*;
  * Represents a game of SlapJack
  **/
 
-public class Game {
+public class Game extends JFrame implements ActionListener {
     private ArrayList<String> playerNames;
     private ArrayList<Player> players;
     private ArrayList<ArrayList<Card>> playerDecks;
@@ -41,6 +45,7 @@ public class Game {
     private static final String QUIT_COMMAND = "quit";
     private static final String SAVE_COMMAND = "save";
     private static final String VIEW_COMMAND = "view";
+    private static final String LOAD_COMMAND = "LOAD";
 
     //EFFECTS: constructs a game
     public Game() throws FileNotFoundException {  // TODO Q: why do we need to throw this exception here?
@@ -48,8 +53,8 @@ public class Game {
         input = new Scanner(System.in);
         leaderboard = new Leaderboard();
         instructions = new ArrayList<>();
-        instructions.add(" : 'z' to slap, 'c' to flip");
         instructions.add(" : 'b' to slap, 'm' to flip");
+        instructions.add(" : 'z' to slap, 'c' to flip");
         instructions.add(" : '2' to slap, 'a' to flip");
         instructions.add(" : 'l' to slap, '0' to flip");
         jsonWriter = new JsonWriter(JSON_STORE);
@@ -67,7 +72,7 @@ public class Game {
     //MODIFIES: this
     //EFFECTS: runs a game based on user input
     public void runGame() throws QuitGame {
-        initializeVariables();
+        setUp();
         handleInputStart();
         initializeAndDeal();
 
@@ -94,6 +99,122 @@ public class Game {
                 System.err.println("That was an invalid input :(");
             }
         }
+    }
+
+    private void setUp() {
+        initializeVariables();
+        initializeGraphics();
+    }
+
+    // MODIFIES: this
+    // EFFECTS:  draws the JFrame window where this Game will operate
+    private void initializeGraphics() {
+        setLayout(new BorderLayout());
+        setMinimumSize(new Dimension(WIDTH, HEIGHT));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setSize(1200,800);
+        setTitle("Slap Jack Mania");
+        setTitlePage();
+    }
+
+    private void setTitlePage() { // TODO adding image doesn't work?
+        try {
+            ImageIcon image = new ImageIcon(getClass().getResource("Image1.jpg"));
+            JLabel displayImage = new JLabel(image);
+            add(displayImage);
+        } catch (Exception e) {
+            System.out.println("Image not found :(");
+        }
+        addButtonsToTitlePage();
+    }
+
+    private void addButtonsToTitlePage() {
+        JButton loadButton = new JButton("Load Data");
+        loadButton.setBounds(550,500,100,50);
+        add(loadButton);
+        loadButton.setActionCommand(LOAD_COMMAND);
+        loadButton.addActionListener(this);
+
+        JButton playButton = new JButton("Start Game");
+        playButton.setBounds(550,600,100,50);
+        add(playButton);
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enterPlayerNamesGUI();
+                loadButton.setVisible(false);
+                playButton.setVisible(false);
+            }
+        });
+    }
+
+    private void enterPlayerNamesGUI() {
+        JFrame names = new JFrame("Players");
+        JLabel label = new JLabel("Please enter up to four players:");
+        JButton enter = new JButton("Enter");
+        JButton done = new JButton("Done");
+        JTextField text = new JTextField();
+        JTextArea textArea = new JTextArea();
+        textArea.setEditable(false);
+
+        label.setBounds(20, 80, 200, 40);
+        text.setBounds(20, 120, 200, 40);
+        enter.setBounds(230, 120, 80, 40);
+        done.setBounds(230, 400, 80, 40);
+        textArea.setBounds(20, 160, 200, 240);
+
+        names.add(label);
+        names.add(text);
+        names.add(textArea);
+
+        names.add(enter);
+        enter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enterNameAction(text, textArea);
+            }
+        });
+
+        names.add(done);
+        done.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doneEnteringNameAction();
+                names.setVisible(false);
+            }
+        });
+
+        names.setSize(500,500);
+        names.setLayout(new BorderLayout());
+        names.setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals(LOAD_COMMAND)) {
+            loadLeaderboard();
+            JLabel message = new JLabel("Loaded Successfully!");
+            JOptionPane.showMessageDialog(null, message);
+        }
+    }
+
+    private void enterNameAction(JTextField text, JTextArea textArea) {
+        numberOfPlayers++;
+        playerNames.add(text.getText().trim());
+        printPlayers();
+        textArea.append(text.getText() + "\n");
+        text.selectAll();
+        //Make sure the new text is visible, even if there was a selection in the text area.
+        textArea.setCaretPosition(textArea.getDocument().getLength());
+        text.setText("");
+    }
+
+    private void doneEnteringNameAction() {
+        start = false;
+        printKeys();
+        JLabel message = new JLabel("Get ready to play!");
+        JOptionPane.showMessageDialog(null, message);
     }
 
     //EFFECTS: helper that initializes each round in the game
@@ -168,13 +289,13 @@ public class Game {
     // if QUIT_COMMAND is entered, throw a QuitGame exception
     // if empty string is entered, throw an InvalidInputException
     private void printInstructions() throws QuitGame, InvalidInputException {
-        System.out.println("\nOther Actions: \nEnter 'LOAD' to load previous leaderboard from file");
+        System.out.println("\nOther Actions: \nEnter '" + LOAD_COMMAND + "' to load previous leaderboard from file");
         System.out.println("Enter '" + PLAY_COMMAND + "' when you are ready to play");
         System.out.println("Enter '" + QUIT_COMMAND + "' to quit the app\n");
         String str;
         str = input.nextLine();
 
-        if (str.equals("LOAD")) {
+        if (str.equals(LOAD_COMMAND)) {
             loadLeaderboard();
         } else if (str.equals(PLAY_COMMAND) || numberOfPlayers == 4) {
             start = false;
