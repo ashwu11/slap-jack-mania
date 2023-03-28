@@ -2,6 +2,9 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -138,5 +141,18 @@ public class LeaderboardTest {
         String expected = "one :  1  |  1\ntwo :  0  |  1\n";
         assertEquals(expected, lb.printAllAccounts());
     }
+
+    @Test
+    public void testGetSortedAccountsByName() {
+        lb.registerAccount("b");
+        lb.registerAccount("a");
+        lb.registerAccount("c");
+        ArrayList<Account> expected = new ArrayList<>();
+        expected.add(lb.getAccounts().get(1));
+        expected.add(lb.getAccounts().get(0));
+        expected.add(lb.getAccounts().get(2));
+        assertEquals(expected, lb.getSortedAccountsByName());
+    }
+
 
 }

@@ -3,6 +3,7 @@ package model;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /*
  * Represents a leaderboard with a list of accounts
@@ -67,6 +68,38 @@ public class Leaderboard {
         json.put("accounts", this.accounts);
         return json;
     }
+
+    //EFFECTS: returns a list of accounts sorted by username
+    public ArrayList<Account> getSortedAccountsByName() {
+        ArrayList<String> names = new ArrayList<>();
+        for (Account a : this.accounts) {
+            names.add(a.getUsername());
+        }
+
+        Collections.sort(names);
+
+        ArrayList<Account> accounts = new ArrayList<>();
+        for (String s : names) {
+            accounts.add(lookupAccount(s));
+
+        }
+
+        return accounts;
+    }
+
+//    public ArrayList<Account> getSortedAccountsByWins() {
+//        ArrayList<Account> accounts = new ArrayList<>();
+//        int n = 0;
+//        for (Account a : this.accounts) {
+//            if (a.getWins() == n) {
+//                accounts.add(a);
+//            }
+//            n++;
+//        }
+//
+//        Collections.sort(accounts, Collections.reverseOrder());
+//        return accounts;
+//    }
 
     //getters
     public ArrayList<Account> getAccounts() {

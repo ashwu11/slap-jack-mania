@@ -1,22 +1,22 @@
 {"accounts": [
     {
-        "wins": 0,
-        "gamesPlayed": 1,
+        "wins": 2,
+        "gamesPlayed": 3,
         "username": "ivan"
     },
     {
         "wins": 1,
-        "gamesPlayed": 1,
+        "gamesPlayed": 3,
         "username": "kobe"
     },
     {
-        "wins": 0,
-        "gamesPlayed": 1,
+        "wins": 1,
+        "gamesPlayed": 3,
         "username": "alan"
     },
     {
-        "wins": 0,
-        "gamesPlayed": 1,
+        "wins": 1,
+        "gamesPlayed": 3,
         "username": "ashley"
     }
 ]}

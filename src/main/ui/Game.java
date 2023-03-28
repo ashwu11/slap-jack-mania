@@ -33,6 +33,8 @@ public class Game extends JFrame implements ActionListener {
     private Boolean end;
     private String winner;
     private String key;
+    private ImageIcon titleImage;
+    private JLabel displayImage;
     private int cardCountInt;
     private int currentTurn;
     private int numberOfPlayers;
@@ -101,6 +103,7 @@ public class Game extends JFrame implements ActionListener {
         }
     }
 
+    //EFFECTS: helper that initializes variables and graphics
     private void setUp() {
         initializeVariables();
         initializeGraphics();
@@ -116,29 +119,37 @@ public class Game extends JFrame implements ActionListener {
         setVisible(true);
         setSize(1200,800);
         setTitle("Slap Jack Mania");
+        loadImages();
         setTitlePage();
+        setBackground(Color.BLUE);
     }
 
-    private void setTitlePage() { // TODO adding image doesn't work?
-        try {
-            ImageIcon image = new ImageIcon(getClass().getResource("Image1.jpg"));
-            JLabel displayImage = new JLabel(image);
-            add(displayImage);
-        } catch (Exception e) {
-            System.out.println("Image not found :(");
-        }
+    //MODIFIES: this
+    //EFFECTS: loads images that will be displayed
+    private void loadImages() {
+        String sep = System.getProperty("file.separator");
+        titleImage = new ImageIcon(System.getProperty("user.dir") + sep  + "images" + sep + "Image1.jpg");
+    }
+
+    //MODIFIES: this
+    //EFFECTS: sets up the title page when the application starts
+    private void setTitlePage() {
         addButtonsToTitlePage();
+        displayImage = new JLabel(titleImage);
+        displayImage.setBounds(0, 0, 1200, 800);
+        add(displayImage);
     }
 
+    //EFFECTS: adds buttons to the title page
     private void addButtonsToTitlePage() {
         JButton loadButton = new JButton("Load Data");
-        loadButton.setBounds(550,500,100,50);
+        loadButton.setBounds(550,650,100,50);
         add(loadButton);
         loadButton.setActionCommand(LOAD_COMMAND);
         loadButton.addActionListener(this);
 
         JButton playButton = new JButton("Start Game");
-        playButton.setBounds(550,600,100,50);
+        playButton.setBounds(525,550,150,75);
         add(playButton);
         playButton.addActionListener(new ActionListener() {
             @Override
@@ -150,25 +161,37 @@ public class Game extends JFrame implements ActionListener {
         });
     }
 
+    //MODIFIES: this
+    //EFFECTS: accepts player name inputs in GUI
     private void enterPlayerNamesGUI() {
         JFrame names = new JFrame("Players");
         JLabel label = new JLabel("Please enter up to four players:");
-        JButton enter = new JButton("Enter");
-        JButton done = new JButton("Done");
         JTextField text = new JTextField();
         JTextArea textArea = new JTextArea();
         textArea.setEditable(false);
 
         label.setBounds(20, 80, 200, 40);
         text.setBounds(20, 120, 200, 40);
-        enter.setBounds(230, 120, 80, 40);
-        done.setBounds(230, 400, 80, 40);
-        textArea.setBounds(20, 160, 200, 240);
+        textArea.setBounds(22, 160, 200, 240);
+
+        createEnterButton(names, text, textArea);
+        createDoneButton(names);
 
         names.add(label);
         names.add(text);
         names.add(textArea);
+        names.setSize(500,500);
+        names.setLayout(new BorderLayout());
+        names.setVisible(true);
+        names.setLocationRelativeTo(this);
+        names.setBackground(Color.GRAY);
+    }
 
+    //MODIFIES: this
+    //EFFECTS: creates Enter button when entering player names
+    private void createEnterButton(JFrame names, JTextField text, JTextArea textArea) {
+        JButton enter = new JButton("Enter");
+        enter.setBounds(230, 120, 80, 40);
         names.add(enter);
         enter.addActionListener(new ActionListener() {
             @Override
@@ -176,7 +199,13 @@ public class Game extends JFrame implements ActionListener {
                 enterNameAction(text, textArea);
             }
         });
+    }
 
+    //MODIFIES: this
+    //EFFECTS: creates Done button when entering player names
+    private void createDoneButton(JFrame names) {
+        JButton done = new JButton("Done");
+        done.setBounds(230, 400, 80, 40);
         names.add(done);
         done.addActionListener(new ActionListener() {
             @Override
@@ -185,12 +214,9 @@ public class Game extends JFrame implements ActionListener {
                 names.setVisible(false);
             }
         });
-
-        names.setSize(500,500);
-        names.setLayout(new BorderLayout());
-        names.setVisible(true);
     }
 
+    //EFFECTS: action performed when load leaderboard button is clicked
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(LOAD_COMMAND)) {
             loadLeaderboard();
@@ -199,22 +225,150 @@ public class Game extends JFrame implements ActionListener {
         }
     }
 
+    //MODIFIES: this
+    //EFFECTS: action performed when Enter button is clicked
     private void enterNameAction(JTextField text, JTextArea textArea) {
         numberOfPlayers++;
         playerNames.add(text.getText().trim());
         printPlayers();
-        textArea.append(text.getText() + "\n");
+        textArea.append(text.getText() + "\n\n");
         text.selectAll();
         //Make sure the new text is visible, even if there was a selection in the text area.
         textArea.setCaretPosition(textArea.getDocument().getLength());
         text.setText("");
     }
 
+    //EFFECTS: action performed when Done button is clicked
     private void doneEnteringNameAction() {
         start = false;
         printKeys();
         JLabel message = new JLabel("Get ready to play!");
         JOptionPane.showMessageDialog(null, message);
+    }
+
+    //EFFECTS: returns an image of specified card
+    private ImageIcon getCardImage(Card card) {
+        return new ImageIcon(card.getCardName() + ".png");
+    }
+
+    //EFFECTS: creates a Leaderboard GUI
+    private void printLeaderboardGUI() {
+        JFrame frame = new JFrame("Leaderboard");
+        frame.setLocationRelativeTo(this);
+        frame.setSize(600, 400);
+        frame.setVisible(true);
+        frame.setBackground(Color.pink);
+
+        frame.getContentPane().setLayout(new FlowLayout());
+
+        JTextArea textArea = new JTextArea("Username \t\t Wins \t\t Games Played \n\n");
+        textArea.setEditable(false);
+        frame.add(textArea);
+        leaderboardHelperGUI(textArea, leaderboard.getAccounts());
+
+        JButton sort = new JButton("Sort By Name");
+        sort.setBounds(220, 120, 80, 40);
+        frame.add(sort);
+        sort.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textArea.setText("Username \t\t Wins \t\t Games Played \n\n");
+                leaderboardHelperGUI(textArea, leaderboard.getSortedAccountsByName());
+            }
+        });
+
+    }
+
+    //EFFECTS: prints the info in leaderboard onto the JTextArea
+    private void leaderboardHelperGUI(JTextArea textArea, ArrayList<Account> accounts) {
+        ArrayList<String> info = new ArrayList<>();
+
+        for (Account a : accounts) {
+            info.add(a.getUsername());
+            info.add(Integer.toString(a.getWins()));
+            info.add(Integer.toString(a.getGamesPlayed()));
+        }
+
+        int n = 1;
+        for (String s : info) {
+            if (n == 3) {
+                textArea.append(s + "\n");
+                n = 1;
+            } else {
+                textArea.append(s + "\t\t");
+                n++;
+            }
+
+        }
+    }
+
+    //MODIFIES: this
+    //EFFECTS: Creates GUI when a game ends
+    private void afterGameGUI() {
+        remove(displayImage);
+        JTextArea win = new JTextArea("The winner is " + winner + "!");  // this doesn't show up :(
+        win.setBounds(550, 100, 100, 50);
+        win.setVisible(true);
+        add(win);
+
+        createSaveButton();
+        createLeaderboardButton();
+        createStoreDataButton();
+        displayImage = new JLabel(titleImage);
+        displayImage.setBounds(0, 0, 1200, 800);
+        add(displayImage);
+    }
+
+    //EFFECTS: creates Save button for afterGameGUI
+    private void createSaveButton() {
+        JButton save = new JButton("Save Game");
+        save.setBounds(250,550,125,75);
+        save.setVisible(true);
+        save.setActionCommand(SAVE_COMMAND);
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleSave();
+                JLabel message = new JLabel("Saved Game Successfully!");
+                JOptionPane.showMessageDialog(null, message);
+            }
+        });
+
+        add(save);
+    }
+
+    //EFFECTS: creates Leaderboard button for afterGameGUI
+    private void createLeaderboardButton() {
+        JButton lb = new JButton("Leaderboard");
+        lb.setBounds(550,550,125,75);
+        lb.setVisible(true);
+        lb.setActionCommand(VIEW_COMMAND);
+        lb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                printLeaderboardGUI();
+            }
+        });
+
+        add(lb);
+    }
+
+    //EFFECTS: creates Store Data button for afterGameGUI
+    private void createStoreDataButton() {
+        JButton store = new JButton("Store Data");
+        store.setBounds(850,550,125,75);
+        store.setVisible(true);
+        store.setActionCommand("store");
+        store.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                storeLeaderboard();
+                JLabel message = new JLabel("Stored Data Successfully!");
+                JOptionPane.showMessageDialog(null, message);
+            }
+        });
+
+        add(store);
     }
 
     //EFFECTS: helper that initializes each round in the game
@@ -228,6 +382,7 @@ public class Game extends JFrame implements ActionListener {
     private void congratulate() {
         System.out.println("\nThe winner is " + winner + "! Good game.");
         System.out.println("\nEnter '" + SAVE_COMMAND + "' to save the game.");
+        afterGameGUI();
     }
 
     //MODIFIES: this
@@ -550,7 +705,6 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS handles the user input after a game
     // if empty string is entered, throw InvalidInputException
     public void handleInputAfter(String word) throws QuitGame, InvalidInputException {
-
         if (word.isEmpty()) {
             throw new InvalidInputException();
         } else if (word.equals(SAVE_COMMAND)) {

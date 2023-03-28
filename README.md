@@ -61,8 +61,8 @@ accounts by saving a game.
 
 # Instructions for Grader
 
-- You can generate the first required action related to adding Xs to a Y by...
-- You can generate the second required action related to adding Xs to a Y by...
+- You can generate the first required action related to adding Xs to a Y by pressing the leaderboard button after a game
+- You can generate the second required action related to adding Xs to a Y by clicking a button in the leaderboard panel
 - You can locate my visual component by starting the application
-- You can save the state of my application by...
+- You can save the state of my application by clicking the 'Store Data' button when a game ends
 - You can reload the state of my application by clicking the 'Load Game' button when the application starts
