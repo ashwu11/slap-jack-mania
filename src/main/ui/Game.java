@@ -50,7 +50,7 @@ public class Game extends JFrame implements ActionListener {
     private static final String LOAD_COMMAND = "LOAD";
 
     //EFFECTS: constructs a game
-    public Game() throws FileNotFoundException {  // TODO Q: why do we need to throw this exception here?
+    public Game() throws FileNotFoundException {
         initializeVariables();
         input = new Scanner(System.in);
         leaderboard = new Leaderboard();
@@ -121,7 +121,7 @@ public class Game extends JFrame implements ActionListener {
         setTitle("Slap Jack Mania");
         loadImages();
         setTitlePage();
-        setBackground(Color.BLUE);
+        getContentPane().setBackground(Color.BLUE);
     }
 
     //MODIFIES: this
@@ -140,24 +140,24 @@ public class Game extends JFrame implements ActionListener {
         add(displayImage);
     }
 
+    //MODIFIES: this
     //EFFECTS: adds buttons to the title page
     private void addButtonsToTitlePage() {
         JButton loadButton = new JButton("Load Data");
-        loadButton.setBounds(550,650,100,50);
+        loadButton.setBounds(525,650,150,50);
+        loadButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
         add(loadButton);
         loadButton.setActionCommand(LOAD_COMMAND);
         loadButton.addActionListener(this);
 
         JButton playButton = new JButton("Start Game");
-        playButton.setBounds(525,550,150,75);
+        playButton.setBounds(512,550,175,80);
+        playButton.setFont(new Font("Times New Roman", Font.BOLD, 25));
         add(playButton);
-        playButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                enterPlayerNamesGUI();
-                loadButton.setVisible(false);
-                playButton.setVisible(false);
-            }
+        playButton.addActionListener(e -> {
+            enterPlayerNamesGUI();
+            loadButton.setVisible(false);
+            playButton.setVisible(false);
         });
     }
 
@@ -165,54 +165,63 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS: accepts player name inputs in GUI
     private void enterPlayerNamesGUI() {
         JFrame names = new JFrame("Players");
-        JLabel label = new JLabel("Please enter up to four players:");
-        JTextField text = new JTextField();
-        JTextArea textArea = new JTextArea();
+        JLabel label = new JLabel("Please enter up to four player names");
+        JTextField text = new JTextField(" ");
+        String space = "           ";
+        JTextArea textArea = new JTextArea("\n" + space);
         textArea.setEditable(false);
 
-        label.setBounds(20, 80, 200, 40);
-        text.setBounds(20, 120, 200, 40);
-        textArea.setBounds(22, 160, 200, 240);
+        label.setBounds(70, 30, 375, 75);
+        text.setBounds(80, 120, 200, 40);
+        textArea.setBounds(85, 180, 195, 200);
 
-        createEnterButton(names, text, textArea);
+        text.setBackground(new Color(255, 248, 244));
+        textArea.setBackground(new Color(216, 233, 248));
+
+        label.setFont(new Font("Times New Roman", Font.BOLD, 22));
+        textArea.setFont(new Font("Times New Roman", Font.BOLD, 18));
+
+        createEnterButton(names, text, textArea, space);
         createDoneButton(names);
 
         names.add(label);
         names.add(text);
         names.add(textArea);
-        names.setSize(500,500);
+        setFrame(names, 500, 500);
+    }
+
+    //EFFECTS: helper that sets the JFrame
+    private void setFrame(JFrame names, int width, int height) {
+        names.setSize(width,height);
         names.setLayout(new BorderLayout());
         names.setVisible(true);
         names.setLocationRelativeTo(this);
-        names.setBackground(Color.GRAY);
+        names.setBackground(new Color(255, 248, 244));
+        names.getContentPane().setBackground(new Color(216, 233, 248));
     }
 
     //MODIFIES: this
     //EFFECTS: creates Enter button when entering player names
-    private void createEnterButton(JFrame names, JTextField text, JTextArea textArea) {
+    private void createEnterButton(JFrame names, JTextField text, JTextArea textArea, String space) {
         JButton enter = new JButton("Enter");
-        enter.setBounds(230, 120, 80, 40);
+        enter.setBackground(new Color(255, 248, 244));
+        enter.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+        enter.setBounds(305, 120, 80, 40);
         names.add(enter);
-        enter.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                enterNameAction(text, textArea);
-            }
-        });
+        enter.addActionListener(e -> enterNameAction(text, textArea, space));
     }
 
     //MODIFIES: this
     //EFFECTS: creates Done button when entering player names
     private void createDoneButton(JFrame names) {
         JButton done = new JButton("Done");
-        done.setBounds(230, 400, 80, 40);
+        done.setBackground(new Color(255, 248, 244));
+        done.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+        done.setBounds(305, 390, 80, 40);
         names.add(done);
-        done.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                doneEnteringNameAction();
-                names.setVisible(false);
-            }
+        done.addActionListener(e -> {
+            doneEnteringNameAction();
+            names.setVisible(false);
         });
     }
 
@@ -220,22 +229,19 @@ public class Game extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(LOAD_COMMAND)) {
             loadLeaderboard();
-            JLabel message = new JLabel("Loaded Successfully!");
+            JLabel message = new JLabel("Loaded Data Successfully!");
             JOptionPane.showMessageDialog(null, message);
         }
     }
 
     //MODIFIES: this
     //EFFECTS: action performed when Enter button is clicked
-    private void enterNameAction(JTextField text, JTextArea textArea) {
+    private void enterNameAction(JTextField text, JTextArea textArea, String space) {
         numberOfPlayers++;
         playerNames.add(text.getText().trim());
         printPlayers();
-        textArea.append(text.getText() + "\n\n");
-        text.selectAll();
-        //Make sure the new text is visible, even if there was a selection in the text area.
-        textArea.setCaretPosition(textArea.getDocument().getLength());
-        text.setText("");
+        textArea.append(text.getText() + "\n\n" + space);
+        text.setText(" ");
     }
 
     //EFFECTS: action performed when Done button is clicked
@@ -254,33 +260,36 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS: creates a Leaderboard GUI
     private void printLeaderboardGUI() {
         JFrame frame = new JFrame("Leaderboard");
-        frame.setLocationRelativeTo(this);
-        frame.setSize(600, 400);
-        frame.setVisible(true);
-        frame.setBackground(Color.pink);
-
-        frame.getContentPane().setLayout(new FlowLayout());
-
+        JLabel label = new JLabel("L E A D E R B O A R D");
         JTextArea textArea = new JTextArea("Username \t\t Wins \t\t Games Played \n\n");
+        JButton sort = new JButton("Sort By Name");
+//        JLabel nameHeader = new JLabel("Username");
+//        JLabel winsHeader = new JLabel("Wins");
+//        JLabel gamesPlayedHeader = new JLabel("Games Played");
+
+        label.setBounds(175, 25, 450, 100);
+        textArea.setBounds(75, 175, 700, 350);
+        sort.setBounds(300, 425, 200, 75);
+
+        label.setFont(new Font("Times New Roman", Font.BOLD, 40));
+        textArea.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        sort.setFont(new Font("Times New Roman", Font.BOLD, 20));
+
+        textArea.setBackground(new Color(216, 233, 248));
         textArea.setEditable(false);
+
+        sort.addActionListener(e -> leaderboardHelperGUI(textArea, leaderboard.getSortedAccountsByName()));
+
+        frame.add(sort);
+        frame.add(label);
         frame.add(textArea);
         leaderboardHelperGUI(textArea, leaderboard.getAccounts());
-
-        JButton sort = new JButton("Sort By Name");
-        sort.setBounds(220, 120, 80, 40);
-        frame.add(sort);
-        sort.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                textArea.setText("Username \t\t Wins \t\t Games Played \n\n");
-                leaderboardHelperGUI(textArea, leaderboard.getSortedAccountsByName());
-            }
-        });
-
+        setFrame(frame, 800, 600);
     }
 
     //EFFECTS: prints the info in leaderboard onto the JTextArea
     private void leaderboardHelperGUI(JTextArea textArea, ArrayList<Account> accounts) {
+        textArea.setText("Username \t\t Wins \t\t Games Played \n\n");
         ArrayList<String> info = new ArrayList<>();
 
         for (Account a : accounts) {
@@ -322,16 +331,14 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS: creates Save button for afterGameGUI
     private void createSaveButton() {
         JButton save = new JButton("Save Game");
-        save.setBounds(250,550,125,75);
+        save.setFont(new Font("Times New Roman", Font.BOLD, 25));
+        save.setBounds(200,550,175,80);
         save.setVisible(true);
         save.setActionCommand(SAVE_COMMAND);
-        save.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleSave();
-                JLabel message = new JLabel("Saved Game Successfully!");
-                JOptionPane.showMessageDialog(null, message);
-            }
+        save.addActionListener(e -> {
+            handleSave();
+            JLabel message = new JLabel("Saved Game Successfully!");
+            JOptionPane.showMessageDialog(null, message);
         });
 
         add(save);
@@ -340,15 +347,11 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS: creates Leaderboard button for afterGameGUI
     private void createLeaderboardButton() {
         JButton lb = new JButton("Leaderboard");
-        lb.setBounds(550,550,125,75);
+        lb.setFont(new Font("Times New Roman", Font.BOLD, 25));
+        lb.setBounds(487,550,225,80);
         lb.setVisible(true);
         lb.setActionCommand(VIEW_COMMAND);
-        lb.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                printLeaderboardGUI();
-            }
-        });
+        lb.addActionListener(e -> printLeaderboardGUI());
 
         add(lb);
     }
@@ -356,16 +359,14 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS: creates Store Data button for afterGameGUI
     private void createStoreDataButton() {
         JButton store = new JButton("Store Data");
-        store.setBounds(850,550,125,75);
+        store.setFont(new Font("Times New Roman", Font.BOLD, 25));
+        store.setBounds(850,550,175,80);
         store.setVisible(true);
         store.setActionCommand("store");
-        store.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                storeLeaderboard();
-                JLabel message = new JLabel("Stored Data Successfully!");
-                JOptionPane.showMessageDialog(null, message);
-            }
+        store.addActionListener(e -> {
+            storeLeaderboard();
+            JLabel message = new JLabel("Stored Data Successfully!");
+            JOptionPane.showMessageDialog(null, message);
         });
 
         add(store);
@@ -714,7 +715,7 @@ public class Game extends JFrame implements ActionListener {
         }
 
         if (word.equals(VIEW_COMMAND)) {
-            System.out.println("\nusername : wins | games played\n" + leaderboard.printAllAccounts() + "\n");
+            System.out.println("\nusername\t\twins\t\tgames played\n" + leaderboard.printAllAccounts() + "\n");
 //            System.out.println("\nEnter '" + REMOVE_COMMAND + "' to remove an account"); //prof said fix problem later
 //        }  else if (word.equals(REMOVE_COMMAND)) {
 //            handleRemove();

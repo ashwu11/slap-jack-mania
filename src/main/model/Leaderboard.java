@@ -57,7 +57,7 @@ public class Leaderboard {
     public String printAllAccounts() {
         String all = "";
         for (Account a : accounts) {
-            all = all.concat(a.getUsername() + " :  " + a.getWins() + "  |  " + a.getGamesPlayed() + "\n");
+            all = all.concat(a.getUsername() + "\t\t\t" + a.getWins() + "\t\t\t" + a.getGamesPlayed() + "\n");
         }
         return all;
     }

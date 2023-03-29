@@ -48,21 +48,22 @@ flipped. The count starts over when a round ends.
  
 
 ## User Stories
-- As a user, I want to be able to add an account to a list of 
-accounts by saving a game.
+- As a user, I want to be able to add an account to a list of accounts by saving a game.
 - As a user, I want to be able to view the list of accounts saved.
 - As a user, I want to be able to slap a card.
 - As a user, I want to be able to remove (i.e. flip) a card.
 - As a user, I want to be able to quit a game.
 
-- As a user, when I finish the game, I want to be given the option to save the leaderboard to file
-- As a user, when I start the application, I want to be given the option to load the leaderboard from file
+- As a user, when I finish the game, I want to be given the option to save the leaderboard to file.
+- As a user, when I start the application, I want to be given the option to load the leaderboard from file.
 
 
 # Instructions for Grader
 
-- You can generate the first required action related to adding Xs to a Y by pressing the leaderboard button after a game
-- You can generate the second required action related to adding Xs to a Y by clicking a button in the leaderboard panel
-- You can locate my visual component by starting the application
-- You can save the state of my application by clicking the 'Store Data' button when a game ends
-- You can reload the state of my application by clicking the 'Load Game' button when the application starts
+- You can generate the first required action related to adding Xs to a Y by pressing the 
+  'Save Game' button after a game.
+- You can generate the second required action related to adding Xs to a Y by clicking the 
+  'Sort By Name' button in the leaderboard panel.
+- You can locate my visual component by starting the application.
+- You can save the state of my application by clicking the 'Store Data' button when a game ends.
+- You can reload the state of my application by clicking the 'Load Game' button when the application starts.
