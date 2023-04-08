@@ -1,37 +1,27 @@
 {"accounts": [
     {
-        "wins": 2,
-        "gamesPlayed": 4,
+        "wins": 1,
+        "gamesPlayed": 1,
         "username": "ivan"
-    },
-    {
-        "wins": 1,
-        "gamesPlayed": 3,
-        "username": "kobe"
-    },
-    {
-        "wins": 1,
-        "gamesPlayed": 3,
-        "username": "alan"
-    },
-    {
-        "wins": 1,
-        "gamesPlayed": 3,
-        "username": "ashley"
-    },
-    {
-        "wins": 1,
-        "gamesPlayed": 1,
-        "username": "eric"
-    },
-    {
-        "wins": 1,
-        "gamesPlayed": 1,
-        "username": "jack"
     },
     {
         "wins": 0,
         "gamesPlayed": 1,
+        "username": "alan"
+    },
+    {
+        "wins": 0,
+        "gamesPlayed": 1,
+        "username": "kobe"
+    },
+    {
+        "wins": 1,
+        "gamesPlayed": 1,
         "username": "ash"
+    },
+    {
+        "wins": 0,
+        "gamesPlayed": 1,
+        "username": "miff"
     }
 ]}

@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -84,16 +86,16 @@ public class Game extends JFrame implements ActionListener {
         // display the last three cards played
 
 
-        // whether a slap or flip occurred
+        // process input for slaps and flips -> associate a key to an event??
+        // for slaps, change to whoever slaps first DOESN'T get penalized, the rest take the split amount of cards
         updateCardCount();
         updateCurrentTurn();
 
         // make a done button for when ppl want to finish playing
         // the following should be after a game has finished
 
-        //-> say who's the winner
-        afterGameGUI();
-        //-> this has save game, leaderboard, and store
+        // announce the winner
+        afterGameGUI(); //-> this has save game, leaderboard, and store
         //play again button?
 
     }
@@ -141,7 +143,6 @@ public class Game extends JFrame implements ActionListener {
     private void initializeGraphics() {
         setLayout(new BorderLayout());
         setMinimumSize(new Dimension(WIDTH, HEIGHT));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
         setSize(1200,800);
@@ -149,6 +150,20 @@ public class Game extends JFrame implements ActionListener {
         loadImages();
         setTitlePage();
         getContentPane().setBackground(Color.BLUE);
+        // 2 ways to do smt on close:
+        //setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        // and then override dispose method.
+        // OR this way is more work but allows for variety of methods (window opening, activated, deiconified, etc)
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                printEventLog();
+                super.windowClosing(e);
+                JOptionPane.showConfirmDialog(null,"Are sure you want to exit?");
+                System.exit(JOptionPane.YES_OPTION);
+            }
+        });
     }
 
     //MODIFIES: this
@@ -834,6 +849,12 @@ public class Game extends JFrame implements ActionListener {
             printed = printed + next.toString() + "\n\n";
         }
         System.out.println(printed);
+    }
+
+    @Override
+    public void dispose() {
+        printEventLog();
+        super.dispose();
     }
 
 //    //Will add this function later
