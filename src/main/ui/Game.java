@@ -65,10 +65,35 @@ public class Game extends JFrame implements ActionListener {
         System.out.println("\nWelcome to SlapJack Mania!\nTo start the game, enter up to four player names.");
 
         try {
-            runGame();
+            //setUp();
+            runGame(); // will not run if GUI calls run game GUI
         } catch (QuitGame e) {
             System.out.println("Quitting game...");
         }
+    }
+
+    //MODIFIES: this
+    //EFFECTS: runs a game based on user input
+    public void runGameGUI() {
+        initializeAndDeal();
+
+
+        // say whose turn it is
+        // display the last three cards played
+
+
+        // whether a slap or flip occurred
+        updateCardCount();
+        updateCurrentTurn();
+
+        // make a done button for when ppl want to finish playing
+        // the following should be after a game has finished
+
+        //-> say who's the winner
+        afterGameGUI();
+        //-> this has save game, leaderboard, and store
+        //play again button?
+
     }
 
     //MODIFIES: this
@@ -155,9 +180,9 @@ public class Game extends JFrame implements ActionListener {
         playButton.setFont(new Font("Times New Roman", Font.BOLD, 25));
         add(playButton);
         playButton.addActionListener(e -> {
-            enterPlayerNamesGUI();
             loadButton.setVisible(false);
             playButton.setVisible(false);
+            enterPlayerNamesGUI();
         });
     }
 
@@ -222,6 +247,12 @@ public class Game extends JFrame implements ActionListener {
         done.addActionListener(e -> {
             doneEnteringNameAction();
             names.setVisible(false);
+            //runGameGUI();  //TODO change to this
+            //try {
+            //    runGame();
+            //} catch (QuitGame ex) {
+            //    System.out.println("Quit game using top left button.");
+            //}
         });
     }
 
@@ -254,7 +285,9 @@ public class Game extends JFrame implements ActionListener {
 
     //EFFECTS: returns an image of specified card
     private ImageIcon getCardImage(Card card) {
-        return new ImageIcon(card.getCardName() + ".png");
+        String sep = System.getProperty("file.separator");
+        return new ImageIcon(System.getProperty("user.dir") + sep  + "images" + sep
+                + card.getCardName() + ".png");
     }
 
     //EFFECTS: creates a Leaderboard GUI
@@ -315,7 +348,7 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS: Creates GUI when a game ends
     private void afterGameGUI() {
         remove(displayImage);
-        JTextArea win = new JTextArea("The winner is " + winner + "!");  // this doesn't show up :(
+        JTextArea win = new JTextArea("The winner is " + winner + "!");  // TODO this doesn't show up :(
         win.setBounds(550, 100, 100, 50);
         win.setVisible(true);
         add(win);

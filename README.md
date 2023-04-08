@@ -67,3 +67,25 @@ flipped. The count starts over when a round ends.
 - You can locate my visual component by starting the application.
 - You can save the state of my application by clicking the 'Store Data' button when a game ends.
 - You can reload the state of my application by clicking the 'Load Game' button when the application starts.
+
+
+# Phase 4: Task 3
+If I had more time to work on the project, I would add a method in the CardDeck class that can return 
+a list of cards that have been played in the game so far. Doing this will remove the association arrow 
+between the Game class and the Card class, which improves cohesion. Instead of keeping track of a list 
+of cards throughout the Game class, I would instead delegate that task to CardDeck and make it their 
+responsibility since CardDeck must already have an association to the Card class as it represents a 
+deck of cards.
+
+Furthermore, the code in the Game class is quite long and many aspects can be refactored to make it 
+shorter and more readable. An example is the duplication of the cardCountInt and cardCount. They 
+work in tandem and changes to one must be reflected in the other, so this can be refactored by 
+adjusting the code so that it is possible to remove one of these variables. This will reduce 
+coupling since it is difficult to maintain both of them at the same time and make sure they are 
+aligned with the same Card.Value.
+
+Another design aspect I wish to change is using a hashmap for the Leaderboard class to represent a 
+collection of accounts instead of using an array list. I believe this fits the methods in the code 
+better and the functionality that I was looking for in that class. For instance, I would be able to
+quickly locate an account by their username instead of looping through the list to find it, which 
+might be more useful for the class. 
