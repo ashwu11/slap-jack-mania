@@ -843,19 +843,26 @@ public class Game extends JFrame implements ActionListener {
         key = key.toLowerCase();
     }
 
+    //EFFECTS: prints event log to the console
     private void printEventLog() {
-        String printed = "";
+        StringBuilder printed = new StringBuilder();
         for (Event next : EventLog.getInstance()) {
-            printed = printed + next.toString() + "\n\n";
+            printed.append(next.toString()).append("\n\n");
         }
+        // this does the same thing as
+        // String printed = "";
+        //        for (Event next : EventLog.getInstance()) {
+        //            printed = printed + next.toString() + "\n\n";
+        //        }
+
         System.out.println(printed);
     }
 
-    @Override
-    public void dispose() {
-        printEventLog();
-        super.dispose();
-    }
+//    @Override
+//    public void dispose() {
+//        printEventLog();
+//        super.dispose();
+//    }
 
 //    //Will add this function later
 //    //EFFECTS: removes an account from the leaderboards
