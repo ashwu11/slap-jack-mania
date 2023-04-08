@@ -68,6 +68,26 @@ flipped. The count starts over when a round ends.
 - You can save the state of my application by clicking the 'Store Data' button when a game ends.
 - You can reload the state of my application by clicking the 'Load Game' button when the application starts.
 
+# Phase 4: Task 2
+Sat Apr 08 00:10:58 PDT 2023
+New account added to leaderboard: ivan
+
+Sat Apr 08 00:10:58 PDT 2023
+Account updated: ivan
+
+Sat Apr 08 00:10:58 PDT 2023
+New account added to leaderboard: kobe
+
+Sat Apr 08 00:10:58 PDT 2023
+Account updated: kobe
+
+Sat Apr 08 00:10:58 PDT 2023
+Account updated: alan
+
+Sat Apr 08 00:11:01 PDT 2023
+Leaderboard has been sorted by name.
+
+
 
 # Phase 4: Task 3
 If I had more time to work on the project, I would add a method in the CardDeck class that can return 
@@ -78,7 +98,9 @@ responsibility since CardDeck must already have an association to the Card class
 deck of cards.
 
 Furthermore, the code in the Game class is quite long and many aspects can be refactored to make it 
-shorter and more readable. An example is the duplication of the cardCountInt and cardCount. They 
+shorter and more readable. I could extract classes from the Game class which handles displaying 
+the user interface for different aspects of the game, then call its methods from the 
+Game class. Another example is the duplication of the cardCountInt and cardCount. They should
 work in tandem and changes to one must be reflected in the other, so this can be refactored by 
 adjusting the code so that it is possible to remove one of these variables. This will reduce 
 coupling since it is difficult to maintain both of them at the same time and make sure they are 

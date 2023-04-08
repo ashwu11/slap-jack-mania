@@ -2,6 +2,7 @@ package ui;
 
 
 import model.*;
+import model.Event;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 import ui.exceptions.InvalidInputException;
@@ -68,6 +69,7 @@ public class Game extends JFrame implements ActionListener {
             //setUp();
             runGame(); // will not run if GUI calls run game GUI
         } catch (QuitGame e) {
+            printEventLog();
             System.out.println("Quitting game...");
         }
     }
@@ -824,6 +826,14 @@ public class Game extends JFrame implements ActionListener {
     private void acceptInput() {
         key = input.nextLine();
         key = key.toLowerCase();
+    }
+
+    private void printEventLog() {
+        String printed = "";
+        for (Event next : EventLog.getInstance()) {
+            printed = printed + next.toString() + "\n\n";
+        }
+        System.out.println(printed);
     }
 
 //    //Will add this function later

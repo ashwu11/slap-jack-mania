@@ -29,6 +29,7 @@ public class Leaderboard {
     public void registerAccount(String name) {
         Account newAccount = new Account(name);
         accounts.add(newAccount);
+        EventLog.getInstance().logEvent(new Event("New account added to leaderboard: " + name));
     }
 
     //MODIFIES: this
@@ -40,6 +41,7 @@ public class Leaderboard {
                 a.updateAccount(win);
             }
         }
+        EventLog.getInstance().logEvent(new Event("Account updated: " + name));
     }
 
     // EFFECTS: returns account object that has name
@@ -84,6 +86,7 @@ public class Leaderboard {
 
         }
 
+        EventLog.getInstance().logEvent(new Event("Leaderboard has been sorted by name."));
         return accounts;
     }
 
