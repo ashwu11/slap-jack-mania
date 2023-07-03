@@ -42,6 +42,13 @@ public class Game extends JFrame implements ActionListener {
     private int currentTurn;
     private int numberOfPlayers;
     private Leaderboard leaderboard;
+    private FlipAction flipAction;
+    private SlapActionB slapActionB;
+    private SlapActionZ slapActionZ;
+    private SlapAction2 slapAction2;
+    private SlapActionL slapActionL;
+    private JLabel cardImg;
+    private JLabel gameMsg;
     private final Scanner input;
     private final JsonWriter jsonWriter;
     private final JsonReader jsonReader;
@@ -66,38 +73,152 @@ public class Game extends JFrame implements ActionListener {
         jsonReader = new JsonReader(JSON_STORE);
 
         System.out.println("\nWelcome to SlapJack Mania!\nTo start the game, enter up to four player names.");
+        setUp();
 
-        try {
-            //setUp();
-            runGame(); // will not run if GUI calls run game GUI
-        } catch (QuitGame e) {
-            printEventLog();
-            System.out.println("Quitting game...");
-        }
+//        try {
+//            runGame(); // will not run if GUI calls run game GUI
+//        } catch (QuitGame e) {
+//            printEventLog();
+//            System.out.println("Quitting game...");
+//        }
     }
 
     //MODIFIES: this
     //EFFECTS: runs a game based on user input
-    public void runGameGUI() {
-        initializeAndDeal();
+    public void runGameGUI() throws QuitGame {
 
+        getContentPane().remove(displayImage);
+        setBackground(new Color(216, 233, 248));
 
-        // say whose turn it is
-        // display the last three cards played
+        // display instructions at the bottom
+        JLabel instructions = new JLabel(returnKeys());
+        instructions.setBounds(175, 700, 1000, 100);
+        instructions.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+        this.add(instructions);
 
+        // indicate whose turn it is
+        JLabel label = new JLabel("\nIt's " + playerNames.get(currentTurn) + "'s turn");
+        label.setBounds(70, 70, 400, 50);
+        label.setFont(new Font("Times New Roman", Font.BOLD, 24));
+        this.add(label);
 
-        // process input for slaps and flips -> associate a key to an event??
-        // for slaps, change to whoever slaps first DOESN'T get penalized, the rest take the split amount of cards
-        updateCardCount();
-        updateCurrentTurn();
+        // display cards played - default is joker
+        this.add(cardImg);
+        addCardActions();
 
-        // make a done button for when ppl want to finish playing
-        // the following should be after a game has finished
+        // done button for when ppl want to stop playing
+        JButton doneButton = new JButton("Finish Game");
+        doneButton.setBounds(520,650,150,50);
+        doneButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        doneButton.setActionCommand("DONE");
+        doneButton.addActionListener(this);
+        add(doneButton);
 
-        // announce the winner
-        afterGameGUI(); //-> this has save game, leaderboard, and store
-        //play again button?
+    }
 
+    public void resetCardImg() {
+        cardImg = new JLabel(getCardImage("Black Joker"));
+    }
+
+    public void updateCardImg() {
+        //Todo card image isn't updating
+        cardImg = new JLabel(getCardImage(cardsPlayed.get(cardsPlayed.size() - 1).getCardName()));
+    }
+
+    public void addCardActions() {
+        cardImg.getInputMap().put(KeyStroke.getKeyStroke('m'), "flipAction");
+        cardImg.getInputMap().put(KeyStroke.getKeyStroke('c'), "flipAction");
+        cardImg.getInputMap().put(KeyStroke.getKeyStroke('a'), "flipAction");
+        cardImg.getInputMap().put(KeyStroke.getKeyStroke('0'), "flipAction");
+        cardImg.getActionMap().put("flipAction", flipAction);
+
+        cardImg.getInputMap().put(KeyStroke.getKeyStroke('b'), "slapActionB");
+        cardImg.getInputMap().put(KeyStroke.getKeyStroke('z'), "slapActionZ");
+        cardImg.getInputMap().put(KeyStroke.getKeyStroke('2'), "slapAction2");
+        cardImg.getInputMap().put(KeyStroke.getKeyStroke('l'), "slapActionL");
+        cardImg.getActionMap().put("slapActionB", slapActionB);
+        cardImg.getActionMap().put("slapActionZ", slapActionZ);
+        cardImg.getActionMap().put("slapAction2", slapAction2);
+        cardImg.getActionMap().put("slapActionL", slapActionL);
+    }
+
+    public class FlipAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Player currentPlayer = players.get(currentTurn);
+            cardFlip(currentPlayer);
+            updateCardCount();
+            updateCurrentTurn();
+            updateCardImg();
+            gameMsg = new JLabel("\n-> " + currentPlayer.getName() + " flipped a card, " + cardCount + "!");
+            gameMsg.setBounds(70, 300, 400, 50);
+            gameMsg.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+            getContentPane().add(gameMsg);
+        }
+    }
+
+    public class SlapActionB extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            resetCardImg();
+            try {
+                cardSlap("b", "z");
+            } catch (InvalidSlapException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            if (gameOver("word")) {
+                afterGameGUI();
+            }
+        }
+    }
+
+    public class SlapActionZ extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            resetCardImg();
+            try {
+                cardSlap("z", "b");
+            } catch (InvalidSlapException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            if (gameOver("word")) {
+                afterGameGUI();
+            }
+        }
+    }
+
+    public class SlapAction2 extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            resetCardImg();
+            try {
+                cardSlap("2", "l");
+            } catch (InvalidSlapException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            if (gameOver("word")) {
+                afterGameGUI();
+            }
+        }
+    }
+
+    public class SlapActionL extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            resetCardImg();
+            try {
+                cardSlap("l", "2");
+            } catch (InvalidSlapException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            if (gameOver("word")) {
+                afterGameGUI();
+            }
+        }
     }
 
     //MODIFIES: this
@@ -136,6 +257,13 @@ public class Game extends JFrame implements ActionListener {
     private void setUp() {
         initializeVariables();
         initializeGraphics();
+        flipAction = new FlipAction();
+        slapActionB = new SlapActionB();
+        slapActionZ = new SlapActionZ();
+        slapAction2 = new SlapAction2();
+        slapActionL = new SlapActionL();
+        resetCardImg();
+        cardImg.setBounds(400, 200, 200, 290);
     }
 
     // MODIFIES: this
@@ -149,7 +277,7 @@ public class Game extends JFrame implements ActionListener {
         setTitle("Slap Jack Mania");
         loadImages();
         setTitlePage();
-        getContentPane().setBackground(Color.BLUE);
+        getContentPane().setBackground(new Color(216, 233, 248));
         // 2 ways to do smt on close:
         //setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         // and then override dispose method.
@@ -251,6 +379,19 @@ public class Game extends JFrame implements ActionListener {
         enter.setBounds(305, 120, 80, 40);
         names.add(enter);
         enter.addActionListener(e -> enterNameAction(text, textArea, space));
+
+        //TODO
+
+//        class EnterAction extends AbstractAction {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                enterNameAction(text, textArea, space);
+//            }
+//        }
+//
+//        AbstractAction enterAction = new EnterAction();
+//        enter.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "enterAction");
+//        enter.getActionMap().put("enterAction", enterAction);
     }
 
     //MODIFIES: this
@@ -264,7 +405,13 @@ public class Game extends JFrame implements ActionListener {
         done.addActionListener(e -> {
             doneEnteringNameAction();
             names.setVisible(false);
-            //runGameGUI();  //TODO change to this
+            try {
+                runGameGUI();
+            } catch (QuitGame ex) {
+                throw new RuntimeException(ex); //TODO fix
+            }
+            // have to enter play in console to start game...
+            //runGameGUI();
             //try {
             //    runGame();
             //} catch (QuitGame ex) {
@@ -280,6 +427,11 @@ public class Game extends JFrame implements ActionListener {
             JLabel message = new JLabel("Loaded Data Successfully!");
             JOptionPane.showMessageDialog(null, message);
         }
+
+        if (e.getActionCommand().equals("DONE")) {
+            afterGameGUI();
+            gameOver(QUIT_COMMAND);
+        }
     }
 
     //MODIFIES: this
@@ -294,17 +446,22 @@ public class Game extends JFrame implements ActionListener {
 
     //EFFECTS: action performed when Done button is clicked
     private void doneEnteringNameAction() {
-        start = false;
         printKeys();
+        initializeAndDeal();
         JLabel message = new JLabel("Get ready to play!");
         JOptionPane.showMessageDialog(null, message);
     }
 
     //EFFECTS: returns an image of specified card
-    private ImageIcon getCardImage(Card card) {
+    private ImageIcon getCardImage(String cardName) {
         String sep = System.getProperty("file.separator");
-        return new ImageIcon(System.getProperty("user.dir") + sep  + "images" + sep
-                + card.getCardName() + ".png");
+        ImageIcon cardimage = new ImageIcon(System.getProperty("user.dir") + sep  + "cardimages" + sep
+                + cardName + ".png");
+        Image image = cardimage.getImage();
+        Image newimg = image.getScaledInstance(200, 290,  java.awt.Image.SCALE_SMOOTH);
+        cardimage = new ImageIcon(newimg);
+
+        return cardimage;
     }
 
     //EFFECTS: creates a Leaderboard GUI
@@ -364,11 +521,21 @@ public class Game extends JFrame implements ActionListener {
     //MODIFIES: this
     //EFFECTS: Creates GUI when a game ends
     private void afterGameGUI() {
-        remove(displayImage);
-        JTextArea win = new JTextArea("The winner is " + winner + "!");  // TODO this doesn't show up :(
-        win.setBounds(550, 100, 100, 50);
+        getContentPane().removeAll();
+        repaint();
+        JLabel win = new JLabel("The winner is " + winner + "!");
+        win.setFont(new Font("Times New Roman", Font.BOLD, 42));
+        win.setForeground(Color.WHITE);
+        win.setBounds(420, 50, 500, 200);
         win.setVisible(true);
-        add(win);
+        this.add(win);
+
+        JLabel thank = new JLabel("Thanks for playing :)");
+        thank.setFont(new Font("Times New Roman", Font.BOLD, 25));
+        thank.setForeground(Color.WHITE);
+        thank.setBounds(475, 120, 500, 200);
+        thank.setVisible(true);
+        this.add(thank);
 
         createSaveButton();
         createLeaderboardButton();
@@ -410,7 +577,7 @@ public class Game extends JFrame implements ActionListener {
     private void createStoreDataButton() {
         JButton store = new JButton("Store Data");
         store.setFont(new Font("Times New Roman", Font.BOLD, 25));
-        store.setBounds(850,550,175,80);
+        store.setBounds(825,550,175,80);
         store.setVisible(true);
         store.setActionCommand("store");
         store.addActionListener(e -> {
@@ -718,6 +885,15 @@ public class Game extends JFrame implements ActionListener {
         }
     }
 
+    private String returnKeys() {
+        String keys = "||   ";
+        for (int k = 0; k < playerNames.size(); k++) {
+            keys = keys.concat(playerNames.get(k) + instructions.get(k) + "   ||   ");
+        }
+        return keys;
+    }
+
+    //Todo winner doesn't work
     //MODIFIES: this
     //EFFECTS: checks whether the game is over and updates the winner
     public boolean gameOver(String input) {
