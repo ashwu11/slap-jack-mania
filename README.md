@@ -1,5 +1,4 @@
 # Slap Jack Mania
-
 ### A reaction-based card game
 
 
@@ -11,41 +10,38 @@ depending on how many players are in the game. The rules below apply to all play
 and a clarification of the terms can be found below as well.
 
 This project is of interest to me because Slap Jack is one of my favorite card 
-games. In fact, my friends and I have developed new rules a long time ago for 
-a harder version because the normal Slap Jack was too easy. I call this Mania mode, 
-and I am familiar with the rules as I have played many times. If I am able to 
-implement the normal mode as desired, I would attempt to add a Mania mode as well.
-I have always wanted to code some sort of interactive game, and this project is the 
+games. I have always wanted to code some sort of interactive game, and this project is the 
 perfect opportunity to do so. I believe this will be a fun project to work on.
 
-## Rules
+The point system of the game follows an opponent pairing process.
+The pair with the first player to slap correctly becomes the active pair for that round.
+The slower player in the active pair must collect all cards from the current round.
+The cards will be distributed based on the actions of the 
+following pairs:
+- Player 1 VS Player 2 
+- Player 3 VS Player 4
 
-- **Objective:** to get rid of your cards.
-- Last player to slap must collect all cards from current round.
-- Players who slap incorrectly must collect all cards from current round.
+
+
+# Rules
+### General
+- **Objective:** to get rid of all your cards.
+- Last player to slap in the active pair must collect all cards from the current round.
+- Players who slap incorrectly must collect all cards from the current round.
 - There is no penalty if all players do not slap the pile.
-- In ascending order, players count up (from Ace to King) every time a card is 
+- In ascending order, players count from Ace to King every time a card is 
 flipped. The count starts over when a round ends.
 
-
-- Slap on Jacks
-- Slap when the card value matches the current count
-- Slap on Doubles
-- Slap on Sandwiches
-
-
-### Terms
-
-- `Double:` Two cards with the same value. Examples:
+### When to slap
+- On Jacks
+- The card value matches the current count
+- Doubles: Two cards with the same value. Examples:
     - 3 + 3
     - Queen + Queen
-
-
-- `Sandwich:` Two cards of the same value with any card in between. Examples:
+- Sandwiches: Two cards of the same value with any card in between. Examples:
     - 1 + 7 + 1
     - King + 3 + King
 
- 
 
 ## User Stories
 - As a user, I want to be able to add an account to a list of accounts by saving a game.
@@ -58,7 +54,7 @@ flipped. The count starts over when a round ends.
 - As a user, when I start the application, I want to be given the option to load the leaderboard from file.
 
 
-# Instructions for Grader
+## Instructions for Grader
 
 - You can generate the first required action related to adding Xs to a Y by pressing the 
   'Save Game' button after a game.
@@ -70,7 +66,7 @@ flipped. The count starts over when a round ends.
 
 
 
-# Phase 4: Task 2
+## Phase 4: Task 2
 Sat Apr 08 00:10:58 PDT 2023
 New account added to leaderboard: ivan
 
@@ -91,7 +87,7 @@ Leaderboard has been sorted by name.
 
 
 
-# Phase 4: Task 3
+## Phase 4: Task 3
 If I had more time to work on the project, I would add a method in the CardDeck class that can return 
 a list of cards that have been played in the game so far. Doing this will remove the association arrow 
 between the Game class and the Card class, which improves cohesion. Instead of keeping track of a list 

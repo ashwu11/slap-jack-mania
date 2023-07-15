@@ -42,7 +42,7 @@ public class Player {
 
     //EFFECTS: checks if the player has no cards left
     public Boolean checkEmpty() {
-        return numCardsLeft <= 0;
+        return numCardsLeft == 0;
     }
 
     //getters & setters

@@ -47,8 +47,13 @@ public class Game extends JFrame implements ActionListener {
     private SlapActionZ slapActionZ;
     private SlapAction2 slapAction2;
     private SlapActionL slapActionL;
+    private JLabel playerTurn;
+    private JLabel footer;
     private JLabel cardImg;
-    private JLabel gameMsg;
+    private JLabel gameMsg1;
+    private JLabel gameMsg2;
+    private JLabel gameMsg3;
+    private JLabel gameMsg4;
     private final Scanner input;
     private final JsonWriter jsonWriter;
     private final JsonReader jsonReader;
@@ -75,8 +80,9 @@ public class Game extends JFrame implements ActionListener {
         System.out.println("\nWelcome to SlapJack Mania!\nTo start the game, enter up to four player names.");
         setUp();
 
+//        // console version
 //        try {
-//            runGame(); // will not run if GUI calls run game GUI
+//            runGame();
 //        } catch (QuitGame e) {
 //            printEventLog();
 //            System.out.println("Quitting game...");
@@ -84,45 +90,82 @@ public class Game extends JFrame implements ActionListener {
     }
 
     //MODIFIES: this
-    //EFFECTS: runs a game based on user input
+    //EFFECTS: runs a GUI game based on user input
     public void runGameGUI() throws QuitGame {
-
-        getContentPane().remove(displayImage);
+        getContentPane().removeAll();
+        getContentPane().repaint();
         setBackground(new Color(216, 233, 248));
+        createFinishGameButton();
+        createRulesButton(650,625,150,75);
+        createKeysButton(this, 350,625,150,75);
+        createGameMessages();
 
         // display instructions at the bottom
-        JLabel instructions = new JLabel(returnKeys());
-        instructions.setBounds(175, 700, 1000, 100);
-        instructions.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-        this.add(instructions);
+        footer = new JLabel(returnKeys());
+        footer.setBounds(250, 700, 1500, 100);
+        footer.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+        this.add(footer);
 
         // indicate whose turn it is
-        JLabel label = new JLabel("\nIt's " + playerNames.get(currentTurn) + "'s turn");
-        label.setBounds(70, 70, 400, 50);
-        label.setFont(new Font("Times New Roman", Font.BOLD, 24));
-        this.add(label);
+        playerTurn = new JLabel("\nIt's " + playerNames.get(currentTurn) + "'s turn");
+        playerTurn.setBounds(80, 80, 400, 50);
+        playerTurn.setFont(new Font("Times New Roman", Font.BOLD, 42));
+        this.add(playerTurn);
 
         // display cards played - default is joker
+        cardImg.setBounds(485, 220, 200, 290);
         this.add(cardImg);
         addCardActions();
+    }
 
-        // done button for when ppl want to stop playing
-        JButton doneButton = new JButton("Finish Game");
-        doneButton.setBounds(520,650,150,50);
-        doneButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        doneButton.setActionCommand("DONE");
-        doneButton.addActionListener(this);
-        add(doneButton);
+    public void createKeysButton(JFrame frame, int x, int y, int width, int height) {
+        JButton keysButton = new JButton("Keys");
+        keysButton.setBounds(x,y,width,height);
+        keysButton.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        keysButton.addActionListener(e -> {
+            keysFrameGUI();
+        });
 
+        frame.add(keysButton);
+    }
+
+    public void createGameMessages() {
+        gameMsg1 = new JLabel("Get rid of all your cards to win!");
+        gameMsg1.setBounds(100, 300, 400, 50);
+        gameMsg1.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        this.add(gameMsg1);
+
+        gameMsg2 = new JLabel("Good Luck!");
+        gameMsg2.setBounds(800, 300, 400, 50);
+        gameMsg2.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        this.add(gameMsg2);
+
+        gameMsg3 = new JLabel("");
+        gameMsg3.setBounds(800, 350, 400, 50);
+        gameMsg3.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        this.add(gameMsg3);
+
+        gameMsg4 = new JLabel("");
+        gameMsg4.setBounds(800, 400, 400, 50);
+        gameMsg4.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        this.add(gameMsg4);
+    }
+
+    public void createFinishGameButton() {
+        JButton finishGameButton = new JButton("Finish Game");
+        finishGameButton.setBounds(500,625,150,75);
+        finishGameButton.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        finishGameButton.setActionCommand("DONE");
+        finishGameButton.addActionListener(this);
+        add(finishGameButton);
     }
 
     public void resetCardImg() {
-        cardImg = new JLabel(getCardImage("Black Joker"));
+        cardImg.setIcon(getCardImage("Black Joker"));
     }
 
     public void updateCardImg() {
-        //Todo card image isn't updating
-        cardImg = new JLabel(getCardImage(cardsPlayed.get(cardsPlayed.size() - 1).getCardName()));
+        cardImg.setIcon(getCardImage(cardsPlayed.get(cardsPlayed.size() - 1).getCardName()));
     }
 
     public void addCardActions() {
@@ -147,75 +190,88 @@ public class Game extends JFrame implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             Player currentPlayer = players.get(currentTurn);
             cardFlip(currentPlayer);
+            gameMsg1.setText("\n-> " + currentPlayer.getName() + " flipped a card, " + cardCount + "!");
+            gameMsg2.setText("");
+            gameMsg3.setText("");
+            gameMsg4.setText("");
             updateCardCount();
             updateCurrentTurn();
+            printCardsPlayed();
+            playerTurn.setText("\nIt's " + playerNames.get(currentTurn) + "'s turn");
+            footer.setText(returnKeys());
             updateCardImg();
-            gameMsg = new JLabel("\n-> " + currentPlayer.getName() + " flipped a card, " + cardCount + "!");
-            gameMsg.setBounds(70, 300, 400, 50);
-            gameMsg.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-            getContentPane().add(gameMsg);
+
+            for (Player p : players) {
+                if (p.checkEmpty()) {
+                    gameOver(QUIT_COMMAND);
+                    afterGameGUI();
+                }
+            }
         }
     }
 
     public class SlapActionB extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            resetCardImg();
             try {
                 cardSlap("b", "z");
             } catch (InvalidSlapException ex) {
-                throw new RuntimeException(ex);
+                System.out.println("oh well");
             }
 
-            if (gameOver("word")) {
-                afterGameGUI();
-            }
+            slapActionPerformedHelper();
         }
     }
 
     public class SlapActionZ extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            resetCardImg();
             try {
                 cardSlap("z", "b");
             } catch (InvalidSlapException ex) {
-                throw new RuntimeException(ex);
+                System.out.println("oh well");
             }
 
-            if (gameOver("word")) {
-                afterGameGUI();
-            }
+            slapActionPerformedHelper();
         }
     }
 
     public class SlapAction2 extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            resetCardImg();
             try {
                 cardSlap("2", "l");
             } catch (InvalidSlapException ex) {
-                throw new RuntimeException(ex);
+                System.out.println("oh well");
             }
 
-            if (gameOver("word")) {
-                afterGameGUI();
-            }
+            slapActionPerformedHelper();
         }
     }
 
     public class SlapActionL extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            resetCardImg();
             try {
                 cardSlap("l", "2");
             } catch (InvalidSlapException ex) {
-                throw new RuntimeException(ex);
+                System.out.println("oh well");
             }
 
-            if (gameOver("word")) {
+            slapActionPerformedHelper();
+        }
+    }
+
+    public void slapActionPerformedHelper() {
+        updateCardCount();
+        updateCurrentTurn();
+        playerTurn.setText("\nIt's " + playerNames.get(currentTurn) + "'s turn");
+        footer.setText(returnKeys());
+        resetCardImg();
+
+        for (Player p : players) {
+            if (p.checkEmpty()) {
+                gameOver(QUIT_COMMAND);
                 afterGameGUI();
             }
         }
@@ -262,8 +318,8 @@ public class Game extends JFrame implements ActionListener {
         slapActionZ = new SlapActionZ();
         slapAction2 = new SlapAction2();
         slapActionL = new SlapActionL();
-        resetCardImg();
-        cardImg.setBounds(400, 200, 200, 290);
+        cardImg = new JLabel(getCardImage("Black Joker"));
+        winner = "everybody";
     }
 
     // MODIFIES: this
@@ -305,6 +361,13 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS: sets up the title page when the application starts
     private void setTitlePage() {
         addButtonsToTitlePage();
+
+        JLabel title = new JLabel("Slap Jack Mania");
+        title.setFont(new Font("Times New Roman", Font.BOLD, 55));
+        title.setForeground(Color.WHITE);
+        title.setBounds(410, 50, 700, 200);
+        this.add(title);
+
         displayImage = new JLabel(titleImage);
         displayImage.setBounds(0, 0, 1200, 800);
         add(displayImage);
@@ -314,15 +377,38 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS: adds buttons to the title page
     private void addButtonsToTitlePage() {
         JButton loadButton = new JButton("Load Data");
-        loadButton.setBounds(525,650,150,50);
-        loadButton.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        loadButton.setBounds(525,670,150,50);
+        loadButton.setFont(new Font("Times New Roman", Font.PLAIN, 20));
         add(loadButton);
         loadButton.setActionCommand(LOAD_COMMAND);
         loadButton.addActionListener(this);
 
+        createPlayButton(loadButton);
+        createRulesButton(700,670,150,50);
+
+        JButton aboutButton = new JButton("About");
+        aboutButton.setBounds(350,670,150,50);
+        aboutButton.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        add(aboutButton);
+        aboutButton.addActionListener(e -> {
+            aboutFrameGUI();
+        });
+    }
+
+    private void createRulesButton(int x, int y, int width, int height) {
+        JButton rulesButton = new JButton("Rules");
+        rulesButton.setBounds(x,y,width,height);
+        rulesButton.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        add(rulesButton);
+        rulesButton.addActionListener(e -> {
+            rulesFrameGUI();
+        });
+    }
+
+    private void createPlayButton(JButton loadButton) {
         JButton playButton = new JButton("Start Game");
-        playButton.setBounds(512,550,175,80);
-        playButton.setFont(new Font("Times New Roman", Font.BOLD, 25));
+        playButton.setBounds(500,560,200,85);
+        playButton.setFont(new Font("Times New Roman", Font.BOLD, 28));
         add(playButton);
         playButton.addActionListener(e -> {
             loadButton.setVisible(false);
@@ -330,6 +416,109 @@ public class Game extends JFrame implements ActionListener {
             enterPlayerNamesGUI();
         });
     }
+
+    //Todo game stops when rules or keys button is pressed...
+
+    private void keysFrameGUI() {
+        JFrame rules = new JFrame("Keys");
+        JLabel label = new JLabel("K E Y S");
+        JTextArea textArea = createKeysDescription();
+        textArea.setEditable(false);
+
+        label.setBounds(75, 15, 200, 75);
+        textArea.setBounds(35, 105, 240, 300);
+
+        textArea.setBackground(new Color(216, 233, 248));
+
+        label.setFont(new Font("Times New Roman", Font.BOLD, 32));
+        textArea.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+
+        rules.add(label);
+        rules.add(textArea);
+        setFrame(rules, 275, 320);
+    }
+
+    private JTextArea createKeysDescription() {
+        return new JTextArea("Player 1 : 'b' to slap, 'm' to flip \n\n"
+        + "Player 2 : 'z' to slap, 'c' to flip\n\n"
+        + "Player 3 : '2' to slap, 'a' to flip\n\n"
+        + "Player 4 : 'l' to slap, '0' to flip\n\n");
+    }
+
+    private void rulesFrameGUI() {
+        JFrame rules = new JFrame("Rules");
+        createKeysButton(rules, 265,485,150,75);
+
+        JLabel label = new JLabel("R U L E S");
+        JTextArea textArea = createRulesDescription();
+        textArea.setEditable(false);
+
+        label.setBounds(265, 35, 200, 75);
+        textArea.setBounds(60, 135, 650, 500);
+
+        textArea.setBackground(new Color(216, 233, 248));
+
+        label.setFont(new Font("Times New Roman", Font.BOLD, 36));
+        textArea.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+
+        rules.add(label);
+        rules.add(textArea);
+        setFrame(rules, 675, 650);
+    }
+
+    private JTextArea createRulesDescription() {
+        return new JTextArea(
+                "General Rules\n\n"
+                + "-  Last player to slap in the active pair must collect all cards from the current round.\n"
+                + "-  Players who slap incorrectly must collect all cards from the current round.\n"
+                + "-  There is no penalty if all players do not slap the pile.\n"
+                + "-  In ascending order, players count from Ace to King every time a card is flipped \n"
+                + "   The count starts over when a round ends.\n\n\n"
+                + "When to Slap\n\n"
+                + "-  A Jack appears\n"
+                + "-  The card value matches the current count\n"
+                + "-  Doubles: Two cards with the same value, ex/ 3 + 3\n"
+                + "-  Sandwich: Two cards of the same value with any card in between, ex/ 1 + 7 + 1");
+    }
+
+    private void aboutFrameGUI() {
+        JFrame about = new JFrame("About");
+        JLabel label = new JLabel("A B O U T");
+        JTextArea textArea = createAboutDescription();
+        textArea.setEditable(false);
+
+        label.setBounds(255, 30, 375, 75);
+        textArea.setBounds(60, 125, 650, 500);
+
+        textArea.setBackground(new Color(216, 233, 248));
+
+        label.setFont(new Font("Times New Roman", Font.BOLD, 32));
+        textArea.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+
+        about.add(label);
+        about.add(textArea);
+        setFrame(about, 675, 590);
+    }
+
+    private JTextArea createAboutDescription() {
+        return new JTextArea(
+                "This application represents a game of Slap Jack, a multiplayer reaction game of \n"
+                        + "up to four players. Players can choose whether to save a game, which will add\n"
+                        + "their account to the leaderboard. Players can also view each saved account's \n"
+                        + "total wins and games played. The 'flips' and 'slaps' will be represented by certain keys, \n"
+                        + "depending on how many players are in the game. The objective is to get rid of all your \n"
+                        + "cards, and a description of the game rules can be found in the rules page.\n\n"
+                        + "This project is of interest to me because Slap Jack is one of my favorite card \n"
+                        + "games. I have always wanted to code some sort of interactive game, and this project is \n"
+                        + "the perfect opportunity to do so. I believe this will be a fun project to work on.\n\n"
+                        + "The point system of the game follows an opponent pairing process.\n"
+                        + "The pair with the first player to slap correctly becomes the active pair for that round.\n"
+                        + "The slower player in the active pair must collect all cards from the current round.\n"
+                        + "The cards will be distributed based on the actions of the following pairs: \n\n"
+                        + "- Player 1 VS Player 2 \n"
+                        + "- Player 3 VS Player 4");
+    }
+
 
     //MODIFIES: this
     //EFFECTS: accepts player name inputs in GUI
@@ -368,6 +557,7 @@ public class Game extends JFrame implements ActionListener {
         names.setLocationRelativeTo(this);
         names.setBackground(new Color(255, 248, 244));
         names.getContentPane().setBackground(new Color(216, 233, 248));
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     //MODIFIES: this
@@ -380,7 +570,15 @@ public class Game extends JFrame implements ActionListener {
         names.add(enter);
         enter.addActionListener(e -> enterNameAction(text, textArea, space));
 
-        //TODO
+        // not sure why this doesn't work
+        enter.getActionMap().put("ENTER", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enterNameAction(text, textArea, space);
+            }
+        });
+
+        //TODO enter key for inputting player names
 
 //        class EnterAction extends AbstractAction {
 //            @Override
@@ -390,7 +588,7 @@ public class Game extends JFrame implements ActionListener {
 //        }
 //
 //        AbstractAction enterAction = new EnterAction();
-//        enter.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "enterAction");
+//        enter.getInputMap().put(KeyStroke.getKeyStroke("Enter"), "enterAction");
 //        enter.getActionMap().put("enterAction", enterAction);
     }
 
@@ -408,7 +606,7 @@ public class Game extends JFrame implements ActionListener {
             try {
                 runGameGUI();
             } catch (QuitGame ex) {
-                throw new RuntimeException(ex); //TODO fix
+                throw new RuntimeException(ex); //TODO fix this
             }
             // have to enter play in console to start game...
             //runGameGUI();
@@ -429,8 +627,8 @@ public class Game extends JFrame implements ActionListener {
         }
 
         if (e.getActionCommand().equals("DONE")) {
-            afterGameGUI();
             gameOver(QUIT_COMMAND);
+            afterGameGUI();
         }
     }
 
@@ -470,16 +668,13 @@ public class Game extends JFrame implements ActionListener {
         JLabel label = new JLabel("L E A D E R B O A R D");
         JTextArea textArea = new JTextArea("Username \t\t Wins \t\t Games Played \n\n");
         JButton sort = new JButton("Sort By Name");
-//        JLabel nameHeader = new JLabel("Username");
-//        JLabel winsHeader = new JLabel("Wins");
-//        JLabel gamesPlayedHeader = new JLabel("Games Played");
 
-        label.setBounds(175, 25, 450, 100);
-        textArea.setBounds(75, 175, 700, 350);
-        sort.setBounds(300, 425, 200, 75);
+        label.setBounds(180, 25, 450, 100);
+        textArea.setBounds(75, 160, 700, 350);
+        sort.setBounds(300, 450, 200, 75);
 
         label.setFont(new Font("Times New Roman", Font.BOLD, 40));
-        textArea.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        textArea.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         sort.setFont(new Font("Times New Roman", Font.BOLD, 20));
 
         textArea.setBackground(new Color(216, 233, 248));
@@ -524,16 +719,16 @@ public class Game extends JFrame implements ActionListener {
         getContentPane().removeAll();
         repaint();
         JLabel win = new JLabel("The winner is " + winner + "!");
-        win.setFont(new Font("Times New Roman", Font.BOLD, 42));
+        win.setFont(new Font("Times New Roman", Font.BOLD, 55));
         win.setForeground(Color.WHITE);
-        win.setBounds(420, 50, 500, 200);
+        win.setBounds(350, 40, 500, 200);
         win.setVisible(true);
         this.add(win);
 
         JLabel thank = new JLabel("Thanks for playing :)");
         thank.setFont(new Font("Times New Roman", Font.BOLD, 25));
         thank.setForeground(Color.WHITE);
-        thank.setBounds(475, 120, 500, 200);
+        thank.setBounds(475, 110, 500, 200);
         thank.setVisible(true);
         this.add(thank);
 
@@ -548,8 +743,8 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS: creates Save button for afterGameGUI
     private void createSaveButton() {
         JButton save = new JButton("Save Game");
-        save.setFont(new Font("Times New Roman", Font.BOLD, 25));
-        save.setBounds(200,550,175,80);
+        save.setFont(new Font("Times New Roman", Font.PLAIN, 25));
+        save.setBounds(200,600,175,80);
         save.setVisible(true);
         save.setActionCommand(SAVE_COMMAND);
         save.addActionListener(e -> {
@@ -564,8 +759,8 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS: creates Leaderboard button for afterGameGUI
     private void createLeaderboardButton() {
         JButton lb = new JButton("Leaderboard");
-        lb.setFont(new Font("Times New Roman", Font.BOLD, 25));
-        lb.setBounds(487,550,225,80);
+        lb.setFont(new Font("Times New Roman", Font.PLAIN, 25));
+        lb.setBounds(487,600,225,80);
         lb.setVisible(true);
         lb.setActionCommand(VIEW_COMMAND);
         lb.addActionListener(e -> printLeaderboardGUI());
@@ -576,8 +771,8 @@ public class Game extends JFrame implements ActionListener {
     //EFFECTS: creates Store Data button for afterGameGUI
     private void createStoreDataButton() {
         JButton store = new JButton("Store Data");
-        store.setFont(new Font("Times New Roman", Font.BOLD, 25));
-        store.setBounds(825,550,175,80);
+        store.setFont(new Font("Times New Roman", Font.PLAIN, 25));
+        store.setBounds(825,600,175,80);
         store.setVisible(true);
         store.setActionCommand("store");
         store.addActionListener(e -> {
@@ -708,7 +903,7 @@ public class Game extends JFrame implements ActionListener {
 
     //EFFECTS: prints the cards that have been played so far
     public void printCardsPlayed() {
-        System.out.println("Cards played:\n");
+        System.out.println("\nCards played:\n");
 
         for (Card c : cardsPlayed) {
             System.out.println(c.getCardName());
@@ -825,14 +1020,17 @@ public class Game extends JFrame implements ActionListener {
                 currentTurn = players.indexOf(p) - 1;
                 p.addCardsToHand(cardsPlayed);
                 cardsPlayed.clear();
-                System.out.println("\n-> Oh no, " + p.getName() + " was the last to slap...");
+                System.out.println("\n-> Oh no, " + p.getName() + " is taking all the cards...");
                 System.out.println("-> Taking all the cards...");
+                gameMsg4.setText("-> Oh no, " + p.getName() + " is taking all the cards...");
             }
 
             if (first.equals(p.getSlapKey())) {
                 System.out.println("\n-> Yay, " + p.getName() + " was the first to slap!");
+                gameMsg2.setText("-> " + p.getName() + " was the first to slap!");
                 if (randomNumber == 1) {
-                    System.out.println("-> So speedy!");
+                    System.out.println("-> So speedy :D");
+                    gameMsg3.setText("-> So speedy :D");
                 }
             }
         }
@@ -843,8 +1041,10 @@ public class Game extends JFrame implements ActionListener {
     private void incorrectSlap(String first) {
         for (Player p : players) {
             if (first.equals(p.getSlapKey())) {
-                System.out.println("\n Oh no, " + p.getName() + " wasn't supposed to slap!\n");
+                System.out.println("\n Oh no, " + p.getName() + " wasn't supposed to slap >:(\n");
                 System.out.println("-> Taking all the cards...");
+                gameMsg2.setText("-> " + p.getName() + " wasn't supposed to slap >:(");
+                gameMsg3.setText("-> Taking all the cards...");
                 p.addCardsToHand(cardsPlayed);
                 cardsPlayed.clear();
                 currentTurn = players.indexOf(p) - 1;
@@ -887,13 +1087,14 @@ public class Game extends JFrame implements ActionListener {
 
     private String returnKeys() {
         String keys = "||   ";
-        for (int k = 0; k < playerNames.size(); k++) {
-            keys = keys.concat(playerNames.get(k) + instructions.get(k) + "   ||   ");
+        for (int k = 0; k < players.size(); k++) {
+            String playerName = players.get(k).getName();
+            int cardsLeft = players.get(k).getNumCardsLeft();
+            keys = keys.concat(playerName + " : " + cardsLeft + " cards left   ||   ");
         }
         return keys;
     }
 
-    //Todo winner doesn't work
     //MODIFIES: this
     //EFFECTS: checks whether the game is over and updates the winner
     public boolean gameOver(String input) {
@@ -997,7 +1198,12 @@ public class Game extends JFrame implements ActionListener {
         Card.Value prevCard;
         int prevCardInt;
 
-        prevCardInt = (cardCountInt - 1) % values.size();
+        if (cardCountInt == 0) {
+            prevCardInt = 13;
+        } else {
+            prevCardInt = (cardCountInt - 1) % values.size(); //Todo changed this might not work later
+        }
+
         prevCard = values.get(prevCardInt);
         return prevCard;
     }
