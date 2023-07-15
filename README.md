@@ -1,5 +1,5 @@
 # Slap Jack Mania
-### A reaction-based card game
+### A multiplayer reaction-based card game
 
 
 This application represents a game of Slap Jack, a multiplayer reaction game of 
