@@ -97,12 +97,12 @@ public class Game extends JFrame implements ActionListener {
         setBackground(new Color(216, 233, 248));
         createFinishGameButton();
         createRulesButton(650,625,150,75);
-        createKeysButton(this, 350,625,150,75);
+        createKeysButton(this, 350,625,150,75, 20);
         createGameMessages();
 
         // display instructions at the bottom
         footer = new JLabel(returnKeys());
-        footer.setBounds(250, 700, 1500, 100);
+        footer.setBounds(50, 700, 1500, 100);
         footer.setFont(new Font("Times New Roman", Font.PLAIN, 16));
         this.add(footer);
 
@@ -118,10 +118,10 @@ public class Game extends JFrame implements ActionListener {
         addCardActions();
     }
 
-    public void createKeysButton(JFrame frame, int x, int y, int width, int height) {
+    public void createKeysButton(JFrame frame, int x, int y, int width, int height, int font) {
         JButton keysButton = new JButton("Keys");
         keysButton.setBounds(x,y,width,height);
-        keysButton.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        keysButton.setFont(new Font("Times New Roman", Font.PLAIN, font));
         keysButton.addActionListener(e -> {
             keysFrameGUI();
         });
@@ -131,7 +131,7 @@ public class Game extends JFrame implements ActionListener {
 
     public void createGameMessages() {
         gameMsg1 = new JLabel("Get rid of all your cards to win!");
-        gameMsg1.setBounds(100, 300, 400, 50);
+        gameMsg1.setBounds(800, 250, 400, 50);
         gameMsg1.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         this.add(gameMsg1);
 
@@ -217,6 +217,7 @@ public class Game extends JFrame implements ActionListener {
                 cardSlap("b", "z");
             } catch (InvalidSlapException ex) {
                 System.out.println("oh well");
+                wrongTurn();
             }
 
             slapActionPerformedHelper();
@@ -230,6 +231,7 @@ public class Game extends JFrame implements ActionListener {
                 cardSlap("z", "b");
             } catch (InvalidSlapException ex) {
                 System.out.println("oh well");
+                wrongTurn();
             }
 
             slapActionPerformedHelper();
@@ -243,6 +245,7 @@ public class Game extends JFrame implements ActionListener {
                 cardSlap("2", "l");
             } catch (InvalidSlapException ex) {
                 System.out.println("oh well");
+                wrongTurn();
             }
 
             slapActionPerformedHelper();
@@ -256,6 +259,7 @@ public class Game extends JFrame implements ActionListener {
                 cardSlap("l", "2");
             } catch (InvalidSlapException ex) {
                 System.out.println("oh well");
+                wrongTurn();
             }
 
             slapActionPerformedHelper();
@@ -278,7 +282,7 @@ public class Game extends JFrame implements ActionListener {
     }
 
     //MODIFIES: this
-    //EFFECTS: runs a game based on user input
+    //EFFECTS: runs a console game based on user input
     public void runGame() throws QuitGame {
         setUp();
         handleInputStart();
@@ -447,7 +451,7 @@ public class Game extends JFrame implements ActionListener {
 
     private void rulesFrameGUI() {
         JFrame rules = new JFrame("Rules");
-        createKeysButton(rules, 265,485,150,75);
+        createKeysButton(rules, 265,485,150,75, 20);
 
         JLabel label = new JLabel("R U L E S");
         JTextArea textArea = createRulesDescription();
@@ -541,6 +545,7 @@ public class Game extends JFrame implements ActionListener {
         textArea.setFont(new Font("Times New Roman", Font.BOLD, 18));
 
         createEnterButton(names, text, textArea, space);
+        createKeysButton(names, 305, 255, 80, 40, 16);
         createDoneButton(names);
 
         names.add(label);
@@ -721,7 +726,7 @@ public class Game extends JFrame implements ActionListener {
         JLabel win = new JLabel("The winner is " + winner + "!");
         win.setFont(new Font("Times New Roman", Font.BOLD, 55));
         win.setForeground(Color.WHITE);
-        win.setBounds(350, 40, 500, 200);
+        win.setBounds(350, 40, 800, 200);
         win.setVisible(true);
         this.add(win);
 
