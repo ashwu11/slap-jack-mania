@@ -29,9 +29,15 @@ following pairs:
 | ------------- | ---------- | ----------- |
 |<img width="1195" alt="Screenshot 2023-10-09 at 1 33 50 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/1c20e9e6-a144-4fa4-86f0-98d20adb94d1"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 35 36 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/02c8ea14-b89f-4b2a-bede-78c90d63c061"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 35 58 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/dbb82f6f-3186-48d6-9193-ea32c9f74e2c"> |
 
-| Game Flow | | | | | | |
-| --------- |-|-|-|-|-|-|
-|| | <img width="1195" alt="Screenshot 2023-10-09 at 1 34 41 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/4c393e05-ea17-462d-97a7-bed5f725362e"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 34 51 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/142f0b4f-51bc-464f-b2fb-5b2200b67326"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 35 01 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/3bc9532e-bb6b-42c2-8ebb-6b2c28aa1ff9"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 35 07 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/47f365ee-4810-49ba-8094-1c062878e625"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 35 16 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/c81fc1aa-4ee9-4417-a56c-be7b54b64a73"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 35 24 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/f78be172-1559-4946-a146-d875d64f6127"> |
+### Game Flow
+| | | |
+|-|-|-|
+| <img width="1195" alt="Screenshot 2023-10-09 at 1 34 41 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/4c393e05-ea17-462d-97a7-bed5f725362e"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 34 51 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/142f0b4f-51bc-464f-b2fb-5b2200b67326"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 35 01 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/3bc9532e-bb6b-42c2-8ebb-6b2c28aa1ff9"> | 
+
+| | | |
+|-|-|-|
+|<img width="1195" alt="Screenshot 2023-10-09 at 1 35 07 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/47f365ee-4810-49ba-8094-1c062878e625"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 35 16 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/c81fc1aa-4ee9-4417-a56c-be7b54b64a73"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 35 24 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/f78be172-1559-4946-a146-d875d64f6127"> |
+
 
 
 
@@ -61,6 +67,8 @@ flipped. The count starts over when a round ends.
 |Player 2 | z    | c    |
 |Player 3 | 2    | a    |
 |Player 4 | l    | 0    |
+
+
 
 
 ## User Stories
