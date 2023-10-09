@@ -3,11 +3,16 @@
 
 
 This application represents a game of Slap Jack, a multiplayer reaction game of 
-up to four players. Players can choose whether to save a game, which will add
-their account to the leaderboard. Players can also view each saved account's 
-total wins and games played. The 'flips' and 'slaps' will be represented by certain keys, 
-depending on how many players are in the game. The rules below apply to all players, 
-and a clarification of the terms can be found below as well.
+up to four players. The deck of cards is split evenly among all players, who take 
+turns revealing cards while counting up from Ace to King. 
+When the pattern of cards satisfies a slap rule, players will race to use the 'slap' action,
+and the goal here is to be faster than other players.
+The slowest player takes the cards from the current round, and the winner is determined by 
+the player who gets rid of all their cards first. The 'flips' and 'slaps' will be represented 
+by keys on a keyboard, depending on how many players are in the game. 
+The rules below apply to all players, and a clarification of the terms can be found below.
+After a game, players can choose to save their usernames to the leaderboard, where they can
+view each players's total wins and games played
 
 This project is of interest to me because Slap Jack is one of my favorite card 
 games. I have always wanted to code some sort of interactive game, and this project is the 
