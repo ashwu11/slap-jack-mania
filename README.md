@@ -1,33 +1,47 @@
-# Slap Jack Mania
-### A multiplayer reaction-based card game
+# Slap Jack Mania ♠️❤️♣️♦️
+### A multiplayer reaction game based on the card game, Slap Jack 
 
+A fully shuffled deck of cards is split evenly among up to four players, 
+who take turns revealing their cards while counting from Ace to King. 
+When the pattern of cards satisfies a certain rule, players must race to use the 'slap' action represented 
+by a key on the keyboard, with the goal of being faster than other players.
+The slowest player takes all cards from the current round, and the winner is 
+the first player to get rid of all their cards. Players interact with the game through 'flips' and 'slaps' 
+that are represented by unique keys on the keyboard.
+After a game, players may save their name to the leaderboard, where they can
+view all players' total wins and number of games played. 
+They can also retrieve game data stored from the previous session. <br><br>
 
-This application represents a game of Slap Jack, a multiplayer reaction game of 
-up to four players. The deck of cards is split evenly among all players, who take 
-turns revealing cards while counting up from Ace to King. 
-When the pattern of cards satisfies a slap rule, players will race to use the 'slap' action,
-and the goal here is to be faster than other players.
-The slowest player takes the cards from the current round, and the winner is determined by 
-the player who gets rid of all their cards first. The 'flips' and 'slaps' will be represented 
-by keys on a keyboard, depending on how many players are in the game. 
-The rules below apply to all players, and a clarification of the terms can be found below.
-After a game, players can choose to save their usernames to the leaderboard, where they can
-view each players's total wins and games played
+## Rules
+### General
+- **Objective:** to get rid of all your cards
+- Last player to slap must collect all cards from the current round
+- Players who slap incorrectly must collect all cards from the current round
+- There is no penalty if **all** players miss a slap
+- In ascending order, players count from Ace to King every time a card is
+flipped. The count starts over when a round ends
+- Winner is determined by whoever gets rid of all their cards first
 
-This project is of interest to me because Slap Jack is one of my favorite card 
-games. I have always wanted to code some sort of interactive game, and this project is the 
-perfect opportunity to do so. I believe this will be a fun project to work on.
+### When to slap
+- On Jacks
+- The card value (i.e. the number) matches the current count
+- Doubles: Two cards with the same value. Examples:
+    - 3 + 3
+    - Queen + Queen
+- Sandwiches: Two cards of the same value with any card in between. Examples:
+    - 1 + 7 + 1
+    - King + 3 + King
+ 
+### User Controls
+| Player  | Slap | Flip |
+|---------|------|------|
+|Player 1 | B    | M    |
+|Player 2 | Z    | C    |
+|Player 3 | 2    | A    |
+|Player 4 | L    | 0    |
 
-The point system of the game follows an opponent pairing process.
-The pair with the first player to slap correctly becomes the active pair for that round.
-The slower player in the active pair must collect all cards from the current round.
-The cards will be distributed based on the actions of the 
-following pairs:
-- Player 1 VS Player 2 
-- Player 3 VS Player 4
-
-
-## Images
+<br><br>
+## Design
 <img width="1195" alt="Screenshot 2023-10-09 at 1 31 26 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/4fed0abf-c5e6-4a4f-b397-a3969ea39118">
 
 | Enter Players | End Screen | Leaderboard |
@@ -43,38 +57,20 @@ following pairs:
 |-|-|-|
 |<img width="1195" alt="Screenshot 2023-10-09 at 1 35 07 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/47f365ee-4810-49ba-8094-1c062878e625"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 35 16 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/c81fc1aa-4ee9-4417-a56c-be7b54b64a73"> | <img width="1195" alt="Screenshot 2023-10-09 at 1 35 24 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/f78be172-1559-4946-a146-d875d64f6127"> |
 
+<sup>Player names above are used for demonstration purposes only<sup>
 
+<br><br>
 
+## About
+This project is of interest to me because Slap Jack is one of my favorite card games. 
+I have always wanted to make some sort of interactive game, and this project is the 
+perfect opportunity to do so. This was such a rewarding and fun project to work on.
+I used Java and core principles of object-oriented programming (OOP) to develop a console application.
+From there, I transformed the console game to a graphical user interface, designed with Java Swing, to allow user-friendly interactions.
+Furthermore, I used the test-driven approach by writing comprehensive test cases with JUnit to ensure app stability.
+The data from previous sessions are stored using JSON serialization and can be accessed in future sessions if desired.
 
-## Rules
-### General
-- **Objective:** to get rid of all your cards.
-- Last player to slap in the active pair must collect all cards from the current round.
-- Players who slap incorrectly must collect all cards from the current round.
-- There is no penalty if all players do not slap the pile.
-- In ascending order, players count from Ace to King every time a card is 
-flipped. The count starts over when a round ends.
-
-### When to slap
-- On Jacks
-- The card value matches the current count
-- Doubles: Two cards with the same value. Examples:
-    - 3 + 3
-    - Queen + Queen
-- Sandwiches: Two cards of the same value with any card in between. Examples:
-    - 1 + 7 + 1
-    - King + 3 + King
- 
-### Keys
-| Player  | Slap | Flip |
-|---------|------|------|
-|Player 1 | b    | m    |
-|Player 2 | z    | c    |
-|Player 3 | 2    | a    |
-|Player 4 | l    | 0    |
-
-
-
+<br><br>
 
 ## User Stories
 - As a user, I want to be able to add an account to a list of accounts by saving a game.
@@ -98,8 +94,7 @@ flipped. The count starts over when a round ends.
 - You can reload the state of my application by clicking the 'Load Game' button when the application starts.
 
 
-
-## Phase 4: Task 2
+## Example of Data Persistence
 Sat Apr 08 00:10:58 PDT 2023
 New account added to leaderboard: ivan
 
@@ -120,7 +115,7 @@ Leaderboard has been sorted by name.
 
 
 
-## Phase 4: Task 3
+## Reflection
 If I had more time to work on the project, I would add a method in the CardDeck class that can return 
 a list of cards that have been played in the game so far. Doing this will remove the association arrow 
 between the Game class and the Card class, which improves cohesion. Instead of keeping track of a list 
