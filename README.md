@@ -1,5 +1,5 @@
 # Slap Jack Mania ♠️❤️♣️♦️
-### A multiplayer reaction game based on the card game, Slap Jack 
+### A multiplayer reaction game based on the card game Slap Jack 
 
 A fully shuffled deck of cards is split evenly among up to four players, 
 who take turns revealing their cards while counting from Ace to King. 
@@ -10,14 +10,16 @@ the first player to get rid of all their cards. Players interact with the game t
 that are represented by unique keys on the keyboard.
 After a game, players may save their name to the leaderboard, where they can
 view all players' total wins and number of games played. 
-They can also retrieve game data stored from the previous session. <br><br>
+They can also retrieve game data stored from the previous session. 
+
+**Built Using:** Java, Swing, JUnit <br><br>
 
 ## Rules
 ### General
 - **Objective:** to get rid of all your cards
 - Last player to slap must collect all cards from the current round
 - Players who slap incorrectly must collect all cards from the current round
-- There is no penalty if **all** players miss a slap
+- There is no penalty if *all* players miss a slap
 - In ascending order, players count from Ace to King every time a card is
 flipped. The count starts over when a round ends
 - Winner is determined by whoever gets rid of all their cards first
@@ -32,7 +34,7 @@ flipped. The count starts over when a round ends
     - 1 + 7 + 1
     - King + 3 + King
  
-### User Controls
+### Player Controls
 | Player  | Slap | Flip |
 |---------|------|------|
 |Player 1 | B    | M    |
@@ -40,8 +42,9 @@ flipped. The count starts over when a round ends
 |Player 3 | 2    | A    |
 |Player 4 | L    | 0    |
 
-<br><br>
-## Design
+<br>
+
+### Design
 <img width="1195" alt="Screenshot 2023-10-09 at 1 31 26 PM" src="https://github.com/ashwu11/slap-jack-mania/assets/134242218/4fed0abf-c5e6-4a4f-b397-a3969ea39118">
 
 | Enter Players | End Screen | Leaderboard |
